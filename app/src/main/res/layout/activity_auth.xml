@@ -85,6 +85,19 @@
                         android:maxLength="20" />
                 </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etPasswordNewGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password of group"
+                        android:lines="1"
+                        android:maxLength="10" />
+                </android.support.design.widget.TextInputLayout>
+
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -97,19 +110,6 @@
                         android:hint="Description of group"
                         android:lines="1"
                         android:maxLength="50" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etPasswordNewGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password of group"
-                        android:lines="1"
-                        android:maxLength="10" />
                 </android.support.design.widget.TextInputLayout>
 
                 <Button

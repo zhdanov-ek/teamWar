@@ -15,6 +15,9 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.gek.teamwar.Data.Group;
+import com.example.gek.teamwar.Utils.Connection;
+import com.example.gek.teamwar.Utils.FbHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -88,8 +91,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
         btnGoogleSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
-        btnGoogleSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
+        btnConnectGroup.setOnClickListener(this);
+        btnCreateGroup.setOnClickListener(this);
         rbCrateGroup.setOnClickListener(View -> chooseNewGroup(true));
         rbChooseGroup.setOnClickListener(View -> chooseNewGroup(false));
 
@@ -124,6 +127,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             case R.id.btnConnectGroup:
                 break;
             case R.id.btnCreateGroup:
+                createNewGroup();
                 break;
         }
     }
@@ -155,6 +159,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "FireBaseSignIn successful " + task.isSuccessful());
+                            Connection.getInstance().setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                             Toast.makeText(getBaseContext(), "Sign in successful", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
@@ -207,6 +212,20 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             FirebaseAuth.getInstance().signOut();
             // TODO: 15.04.17 Stop service with location listener
             updateUi();
+        }
+    }
+
+    private void createNewGroup(){
+        Group group = new Group();
+        if ((etNameNewGroup.getText().length() == 0) ||
+                (etPasswordNewGroup.getText().length() == 0)){
+            Toast.makeText(this, "Fill name of group and password!", Toast.LENGTH_LONG).show();
+        } else {
+            group.setName(etNameNewGroup.getText().toString());
+            group.setPassword(etPasswordNewGroup.getText().toString());
+            group.setDescription(etDescriptionNewGroup.getText().toString());
+            group.setEmailOwner(Connection.getInstance().getUserEmail());
+            FbHelper.createGroup(group);
         }
     }
 }
