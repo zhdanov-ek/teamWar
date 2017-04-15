@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.gek.teamwar.AuthActivity">
 
-    <ScrollView
-        android:layout_width="match_parent"
+
+
+    <Button
+        android:id="@+id/btnGoogleSignIn"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Sign in"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:visibility="gone"
+        android:layout_below="@+id/btnGoogleSignIn"
+        android:layout_centerHorizontal="true" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btnGoogleSignIn"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:text="Sign in" />
 
             <Button
                 android:id="@+id/btnSignOut"
@@ -33,73 +43,122 @@
                 android:layout_height="50dp"
                 android:text="Sign out" />
 
-            <EditText
-                android:hint="Your nick name"
-                android:id="@+id/etName"
-                android:layout_width="200dp"
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Your nick name"
+                    android:lines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <RadioGroup
+                android:id="@+id/rgGroups"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="1" />
+                android:visibility="visible">
 
-           <RadioGroup
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-               <RadioButton
-                   android:checked="true"
-                   android:id="@+id/rbCrateGroup"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Create new group"/>
-
-               <EditText
-                   android:id="@+id/etNameGroup"
-                   android:hint="Name of group"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:lines="1"
-                   android:maxLength="20"/>
-               <EditText
-                   android:id="@+id/etDescriptionGroup"
-                   android:hint="Description of group"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:lines="1"
-                   android:maxLength="50"/>
-               <EditText
-                   android:id="@+id/etPasswordGroup"
-                   android:hint="Password of group"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:maxLength="10"
-                   android:lines="1"/>
-               <Button
-                   android:id="@+id/btnCreateGroup"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_gravity="right"
-                   android:text="Create"/>
+                <RadioButton
+                    android:id="@+id/rbCrateGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Create new group" />
 
 
-               <RadioButton
-                   android:id="@+id/rbChooseGroup"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Choose group"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-               <Spinner
-                   android:id="@+id/spinnerGroups"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"/>
-               <Button
-                   android:id="@+id/btnConnectGroup"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_gravity="right"
-                   android:text="Connect"/>
+                    <EditText
+                        android:id="@+id/etNameNewGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name of group"
+                        android:lines="1"
+                        android:maxLength="20" />
+                </android.support.design.widget.TextInputLayout>
 
-           </RadioGroup>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etDescriptionNewGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Description of group"
+                        android:lines="1"
+                        android:maxLength="50" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etPasswordNewGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password of group"
+                        android:lines="1"
+                        android:maxLength="10" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnCreateGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="Create" />
+
+
+                <RadioButton
+                    android:id="@+id/rbChooseGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose group" />
+
+                <Spinner
+                    android:id="@+id/spinnerGroups"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etPasswordGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password of group"
+                        android:lines="1"
+                        android:maxLength="10" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnConnectGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="Connect" />
+
+
+            </RadioGroup>
+
 
         </LinearLayout>
     </ScrollView>
 
 
-</LinearLayout>
+
+
+</RelativeLayout>
