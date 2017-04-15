@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "479944645041",
+    "firebase_url": "https://teamwar-7a88d.firebaseio.com",
+    "project_id": "teamwar-7a88d",
+    "storage_bucket": "teamwar-7a88d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479944645041:android:2c3d59e220ed0132",
+        "android_client_info": {
+          "package_name": "com.example.gek.teamwar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479944645041-c5uphlggo9319o9itd7nbgos5bebbtrd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gek.teamwar",
+            "certificate_hash": "2a78bebc1b15d09f589443bec93c10f0389bf359"
+          }
+        },
+        {
+          "client_id": "479944645041-jjde386blda7ij77bsf9qn6tci3t3mh1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGiKGWC5y9IOC1nm4U-NBf80Ua4j32Uio"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479944645041-jjde386blda7ij77bsf9qn6tci3t3mh1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
