@@ -136,11 +136,14 @@ public class MapActivity extends FragmentActivity
      */
     private void updateUi() {
         mMap.clear();
-        for (Warior warior: mListWariors){
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(warior.getLongtitude(), warior.getLatitude()))
-                    .title(warior.getName()));
+        if (mListWariors != null){
+            for (Warior warior: mListWariors){
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(warior.getLongtitude(), warior.getLatitude()))
+                        .title(warior.getName()));
+            }
         }
+
     }
 
 

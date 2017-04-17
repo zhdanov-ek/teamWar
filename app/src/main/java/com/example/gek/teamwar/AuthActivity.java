@@ -188,7 +188,12 @@ public class AuthActivity extends AppCompatActivity
     }
 
     private void connectToGroup(){
-
+        if ((etName.getText().length() > 2) && (etPasswordGroup.getText().length() > 2)){
+            Connection.getInstance().setUserName(etName.getText().toString());
+            Connection.getInstance().setGroupPassword(etPasswordGroup.getText().toString());
+            Connection.getInstance().setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            startActivity(new Intent(this, MapActivity.class));
+        }
     }
 
 

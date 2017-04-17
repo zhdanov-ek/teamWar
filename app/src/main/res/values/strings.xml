@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">TeamWar</string>
 
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+         AIzaSyDQXXzsQrPtVNMQ51pBmryso5rBWI2xnsI
+    </string>
+
     <string name="permission_location_not_granded">No permissions for use locales</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -7,7 +7,7 @@ package com.example.gek.teamwar.Utils;
 public class Connection {
     public static final int DEFAULT_DELAY = 5*1000;
     private static Connection instance;
-    private String groupName;
+    private String groupPassword;
     private String userName;
     private String userEmail;
     private int delayTransferLocation;
@@ -21,25 +21,25 @@ public class Connection {
 
     // Constructor
     private Connection(){
-        groupName = "";
+        groupPassword = "";
         userName = "";
         userEmail = "";
         delayTransferLocation = DEFAULT_DELAY;
     }
 
     public void close(){
-        groupName = "";
+        groupPassword = "";
         userName = "";
         userEmail = "";
         delayTransferLocation = DEFAULT_DELAY;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getGroupPassword() {
+        return groupPassword;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupPassword(String groupPassword) {
+        this.groupPassword = groupPassword;
     }
 
     public String getUserName() {
