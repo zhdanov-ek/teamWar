@@ -35,7 +35,7 @@ public class AuthActivity extends AppCompatActivity
 
     private ScrollView scrollView;
     private ProgressBar progressBar;
-    private Button btnGoogleSignIn, btnSignOut;
+    private Button btnGoogleSignIn, btnSignOut, btnStopService;
     private Button  btnConnectGroup;
     private EditText etName;
     private EditText etPasswordGroup;
@@ -67,6 +67,7 @@ public class AuthActivity extends AppCompatActivity
         btnGoogleSignIn = (Button) findViewById(R.id.btnGoogleSignIn);
         btnSignOut = (Button) findViewById(R.id.btnSignOut);
         btnConnectGroup = (Button) findViewById(R.id.btnConnectGroup);
+        btnStopService = (Button) findViewById(R.id.btnStopService);
 
         etName = (EditText) findViewById(R.id.etName);
         etPasswordGroup = (EditText) findViewById(R.id.etPasswordGroup);
@@ -74,6 +75,7 @@ public class AuthActivity extends AppCompatActivity
         btnGoogleSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
         btnConnectGroup.setOnClickListener(this);
+        btnStopService.setOnClickListener(this);
     }
 
 
@@ -96,6 +98,9 @@ public class AuthActivity extends AppCompatActivity
                 break;
             case R.id.btnConnectGroup:
                 connectToGroup();
+                break;
+            case R.id.btnStopService:
+                stopLocationService();
                 break;
         }
     }
@@ -150,6 +155,9 @@ public class AuthActivity extends AppCompatActivity
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             btnGoogleSignIn.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
+            btnStopService.setVisibility(
+                    Connection.getInstance().getServiceRunning() ?
+                    View.VISIBLE : View.GONE);
 
         } else {
             btnGoogleSignIn.setVisibility(View.VISIBLE);
@@ -196,5 +204,10 @@ public class AuthActivity extends AppCompatActivity
         }
     }
 
+    private void stopLocationService(){
+        stopService(new Intent(this,LocationService.class));
+        Connection.getInstance().setServiceRunning(false);
+        updateUi();
+    }
 
 }

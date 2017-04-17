@@ -1,6 +1,7 @@
 package com.example.gek.teamwar;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Data.Warior;
+import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,7 +26,6 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -112,6 +113,9 @@ public class MapActivity extends FragmentActivity
 //                        .setInterval(Const.LOCATION_INTERVAL_UPDATE * 1000);
 //                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
                 updateUi();
+                if (!Connection.getInstance().getServiceRunning()){
+                    startService(new Intent(this,LocationService.class));
+                }
             }
         } else {
             connectToGoogleApiClient();
@@ -139,7 +143,7 @@ public class MapActivity extends FragmentActivity
         if (mListWariors != null){
             for (Warior warior: mListWariors){
                 mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(warior.getLongtitude(), warior.getLatitude()))
+                        .position(new LatLng(warior.getLongitude(), warior.getLatitude()))
                         .title(warior.getName()));
             }
         }

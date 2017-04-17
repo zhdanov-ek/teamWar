@@ -10,7 +10,7 @@ public class Warior {
     private String name;
     private String team;
     private int state;
-    private double longtitude;
+    private double longitude;
     private double latitude;
     private Date date;
 
@@ -36,11 +36,11 @@ public class Warior {
         this.state = state;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public double getLatitude() {

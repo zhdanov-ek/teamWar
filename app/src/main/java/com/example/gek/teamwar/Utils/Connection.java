@@ -10,7 +10,12 @@ public class Connection {
     private String groupPassword;
     private String userName;
     private String userEmail;
+    private String team;
     private int delayTransferLocation;
+
+
+
+    private Boolean serviceRunning;
 
     public static synchronized Connection getInstance(){
         if (instance == null) {
@@ -25,6 +30,7 @@ public class Connection {
         userName = "";
         userEmail = "";
         delayTransferLocation = DEFAULT_DELAY;
+        serviceRunning = false;
     }
 
     public void close(){
@@ -37,7 +43,6 @@ public class Connection {
     public String getGroupPassword() {
         return groupPassword;
     }
-
     public void setGroupPassword(String groupPassword) {
         this.groupPassword = groupPassword;
     }
@@ -45,7 +50,6 @@ public class Connection {
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -53,7 +57,6 @@ public class Connection {
     public String getUserEmail() {
         return userEmail;
     }
-
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
@@ -61,8 +64,21 @@ public class Connection {
     public int getDelayTransferLocation() {
         return delayTransferLocation;
     }
-
     public void setDelayTransferLocation(int delayTransferLocation) {
         this.delayTransferLocation = delayTransferLocation;
+    }
+
+    public Boolean getServiceRunning() {
+        return serviceRunning;
+    }
+    public void setServiceRunning(Boolean serviceRunning) {
+        this.serviceRunning = serviceRunning;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+    public void setTeam(String team) {
+        this.team = team;
     }
 }
