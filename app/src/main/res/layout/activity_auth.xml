@@ -5,24 +5,22 @@
     android:layout_height="match_parent"
     tools:context="com.example.gek.teamwar.AuthActivity">
 
-
-
     <Button
         android:id="@+id/btnGoogleSignIn"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:text="Sign in"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="center"
+        android:text="Sign in" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_below="@+id/btnGoogleSignIn"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -45,12 +43,12 @@
 
 
             <android.support.design.widget.TextInputLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/etName"
-                    android:layout_width="200dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:hint="Your nick name"
@@ -58,107 +56,30 @@
             </android.support.design.widget.TextInputLayout>
 
 
-            <RadioGroup
-                android:id="@+id/rgGroups"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etPasswordGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Password of group"
+                    android:lines="1"
+                    android:maxLength="10" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnConnectGroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
-
-                <RadioButton
-                    android:id="@+id/rbCrateGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Create new group" />
-
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etNameNewGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Name of group"
-                        android:lines="1"
-                        android:maxLength="20" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etPasswordNewGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password of group"
-                        android:lines="1"
-                        android:maxLength="10" />
-                </android.support.design.widget.TextInputLayout>
-
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etDescriptionNewGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Description of group"
-                        android:lines="1"
-                        android:maxLength="50" />
-                </android.support.design.widget.TextInputLayout>
-
-                <Button
-                    android:id="@+id/btnCreateGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="Create" />
-
-
-                <RadioButton
-                    android:id="@+id/rbChooseGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Choose group" />
-
-                <Spinner
-                    android:id="@+id/spinnerGroups"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etPasswordGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password of group"
-                        android:lines="1"
-                        android:maxLength="10" />
-                </android.support.design.widget.TextInputLayout>
-
-                <Button
-                    android:id="@+id/btnConnectGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="Connect" />
-
-
-            </RadioGroup>
+                android:layout_gravity="center_horizontal"
+                android:text="Connect" />
 
 
         </LinearLayout>
     </ScrollView>
-
-
 
 
 </RelativeLayout>

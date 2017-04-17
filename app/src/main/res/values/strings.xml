@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TeamWar</string>
+
+    <string name="permission_location_not_granded">No permissions for use locales</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

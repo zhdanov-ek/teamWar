@@ -9,15 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.gek.teamwar.Data.Group;
 import com.example.gek.teamwar.Utils.Connection;
-import com.example.gek.teamwar.Utils.FbHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -31,7 +26,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class AuthActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class AuthActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static int RC_SIGN_IN_GOOGLE = 1;
     private static String TAG = "AUTH_ACTIVITY";
     private static String EXTRA_IS_PROGRESSBAR = "progress_bar";
@@ -40,13 +36,9 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private ScrollView scrollView;
     private ProgressBar progressBar;
     private Button btnGoogleSignIn, btnSignOut;
+    private Button  btnConnectGroup;
     private EditText etName;
-    private Button btnCreateGroup, btnConnectGroup;
-    private EditText etNameNewGroup, etDescriptionNewGroup, etPasswordNewGroup;
     private EditText etPasswordGroup;
-    private RadioGroup rgGroups;
-    private Spinner spinnerGroups;
-    private RadioButton rbCrateGroup, rbChooseGroup;
     private Boolean isProgressBarShow = false;
 
     @Override
@@ -54,7 +46,6 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         findAllView();
-        chooseNewGroup(true);
 
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -75,37 +66,16 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnGoogleSignIn = (Button) findViewById(R.id.btnGoogleSignIn);
         btnSignOut = (Button) findViewById(R.id.btnSignOut);
-        btnCreateGroup = (Button) findViewById(R.id.btnCreateGroup);
         btnConnectGroup = (Button) findViewById(R.id.btnConnectGroup);
 
         etName = (EditText) findViewById(R.id.etName);
-        etNameNewGroup = (EditText) findViewById(R.id.etNameNewGroup);
-        etDescriptionNewGroup = (EditText) findViewById(R.id.etDescriptionNewGroup);
-        etPasswordNewGroup = (EditText) findViewById(R.id.etPasswordNewGroup);
         etPasswordGroup = (EditText) findViewById(R.id.etPasswordGroup);
-
-        rgGroups = (RadioGroup) findViewById(R.id.rgGroups);
-        rbCrateGroup = (RadioButton) findViewById(R.id.rbCrateGroup);
-        rbChooseGroup = (RadioButton) findViewById(R.id.rbChooseGroup);
-        spinnerGroups = (Spinner) findViewById(R.id.spinnerGroups);
 
         btnGoogleSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
         btnConnectGroup.setOnClickListener(this);
-        btnCreateGroup.setOnClickListener(this);
-        rbCrateGroup.setOnClickListener(View -> chooseNewGroup(true));
-        rbChooseGroup.setOnClickListener(View -> chooseNewGroup(false));
-
     }
 
-    private void chooseNewGroup(Boolean isCreateGroup) {
-        etNameNewGroup.setEnabled(isCreateGroup);
-        etDescriptionNewGroup.setEnabled(isCreateGroup);
-        etPasswordNewGroup.setEnabled(isCreateGroup);
-        btnCreateGroup.setEnabled(isCreateGroup);
-        spinnerGroups.setEnabled(!isCreateGroup);
-        btnConnectGroup.setEnabled(!isCreateGroup);
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -125,9 +95,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                 makeSignOut();
                 break;
             case R.id.btnConnectGroup:
-                break;
-            case R.id.btnCreateGroup:
-                createNewGroup();
+                connectToGroup();
                 break;
         }
     }
@@ -159,7 +127,6 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "FireBaseSignIn successful " + task.isSuccessful());
-                            Connection.getInstance().setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                             Toast.makeText(getBaseContext(), "Sign in successful", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
@@ -172,6 +139,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -182,6 +150,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             btnGoogleSignIn.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
+
         } else {
             btnGoogleSignIn.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
@@ -210,22 +179,17 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private void makeSignOut() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
+            Connection.getInstance().close();
+
             // TODO: 15.04.17 Stop service with location listener
+
             updateUi();
         }
     }
 
-    private void createNewGroup(){
-        Group group = new Group();
-        if ((etNameNewGroup.getText().length() == 0) ||
-                (etPasswordNewGroup.getText().length() == 0)){
-            Toast.makeText(this, "Fill name of group and password!", Toast.LENGTH_LONG).show();
-        } else {
-            group.setName(etNameNewGroup.getText().toString());
-            group.setPassword(etPasswordNewGroup.getText().toString());
-            group.setDescription(etDescriptionNewGroup.getText().toString());
-            group.setEmailOwner(Connection.getInstance().getUserEmail());
-            FbHelper.createGroup(group);
-        }
+    private void connectToGroup(){
+
     }
+
+
 }
