@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
+import com.example.gek.teamwar.Utils.FbHelper;
 import com.example.gek.teamwar.Utils.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,6 +53,7 @@ public class MapActivity extends FragmentActivity
     private SharedPreferences sharedPreferences;
     private CameraUpdate mCameraUpdate;
     private ArrayList<Warior> mListWariors;
+    private Boolean mIsAllReady = false;
 
 
     @Override
@@ -105,13 +107,7 @@ public class MapActivity extends FragmentActivity
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     && this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                     || (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)) {
-
-                // TODO: 17.04.17 Here need to start the service
-//                mMap.setMyLocationEnabled(true);
-//                LocationRequest locationRequest = LocationRequest.create()
-//                        .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-//                        .setInterval(Const.LOCATION_INTERVAL_UPDATE * 1000);
-//                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+                mIsAllReady = true;
                 updateUi();
                 if (!Connection.getInstance().getServiceRunning()){
                     startService(new Intent(this,LocationService.class));
@@ -123,17 +119,6 @@ public class MapActivity extends FragmentActivity
     }
 
 
-//    /**
-//     * Receive location of device - refresh the map
-//     */
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        mClientLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//        if (mMap != null) {
-//            updateUi();
-//        }
-//    }
-
 
     /**
      * Refresh the map
@@ -143,7 +128,7 @@ public class MapActivity extends FragmentActivity
         if (mListWariors != null){
             for (Warior warior: mListWariors){
                 mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(warior.getLongitude(), warior.getLatitude()))
+                        .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
                         .title(warior.getName()));
             }
         }
@@ -151,15 +136,38 @@ public class MapActivity extends FragmentActivity
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
+                .child(FbHelper.CHILD_WARIORS)
+                .addValueEventListener(mPositionWariorsListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
+                .child(FbHelper.CHILD_WARIORS)
+                .removeEventListener(mPositionWariorsListener);
+    }
+
     /**
      * Listen location of courier from DB
      */
     private ValueEventListener mPositionWariorsListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.d(TAG, "onDataChange: get new position of wariors");
+            if (mListWariors == null) {
+                mListWariors = new ArrayList<>();
+            }
+            mListWariors.clear();
+            for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                mListWariors.add(childSnapshot.getValue(Warior.class));
+            }
 
-            //Log.d(TAG, "onDataChange: get Location " + mPositionCourier.toString());
-            if (mMap != null) {
+            if ((mMap != null) && (mIsAllReady)) {
                 updateUi();
             }
         }
