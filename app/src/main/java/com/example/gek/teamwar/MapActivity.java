@@ -28,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -132,9 +133,20 @@ public class MapActivity extends FragmentActivity
      */
     private void updateUi() {
         Log.d(TAG, "updateUi: ");
+
+        // get my location. Need for get distance to other markers. Execute only after onCreate
+        if ((mMyLocation == null) && (mListWariors != null)) {
+            for (Warior warior : mListWariors) {
+                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
+                    mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
+                    break;
+                }
+            }
+        }
         mMap.clear();
         if (mListWariors != null){
             for (Warior warior: mListWariors) {
+                String distance;
                 // i am
                 if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
@@ -144,14 +156,11 @@ public class MapActivity extends FragmentActivity
                             .title("I am")
                             .zIndex(1.0f));         // Show over other markers (other have index 0 (default)
                 } else {
-                    String dist = "";
-                    if (mMyLocation != null){
-                        dist = "\n" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
-                                warior.getLatitude(), warior.getLongitude());
-                    }
+                    distance = " (" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
+                            warior.getLatitude(), warior.getLongitude()) + ")";
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
-                            .title(warior.getName() + dist));
+                            .title(warior.getName() + distance));
                 }
             }
         }
