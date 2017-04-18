@@ -39,7 +39,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 /**
- * Created by gek on 17.04.17.
+ * Show the map with wariors and objects
+ *
+ * https://developers.google.com/maps/documentation/android-api/marker?hl=ru
  */
 
 public class MapActivity extends FragmentActivity
@@ -139,11 +141,17 @@ public class MapActivity extends FragmentActivity
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
                             .icon(bdIam)
-                            .title("I am"));
+                            .title("I am")
+                            .zIndex(1.0f));         // Show over other markers (other have index 0 (default)
                 } else {
+                    String dist = "";
+                    if (mMyLocation != null){
+                        dist = "\n" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
+                                warior.getLatitude(), warior.getLongitude());
+                    }
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
-                            .title(warior.getName()));
+                            .title(warior.getName() + dist));
                 }
             }
         }
