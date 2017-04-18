@@ -10,6 +10,7 @@ public class Connection {
     private String groupPassword;
     private String userName;
     private String userEmail;
+    private String userKey;
     private String team;
     private int delayTransferLocation;
 
@@ -29,6 +30,7 @@ public class Connection {
         groupPassword = "";
         userName = "";
         userEmail = "";
+        userKey = "";
         delayTransferLocation = DEFAULT_DELAY;
         serviceRunning = false;
     }
@@ -59,6 +61,7 @@ public class Connection {
     }
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+        userKey = Utils.createWariorKey(userEmail);
     }
 
     public int getDelayTransferLocation() {
@@ -80,5 +83,9 @@ public class Connection {
     }
     public void setTeam(String team) {
         this.team = team;
+    }
+
+    public String getUserKey() {
+        return userKey;
     }
 }

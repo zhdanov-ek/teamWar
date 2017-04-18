@@ -9,6 +9,7 @@ import java.util.Date;
 public class Warior {
     private String name;
     private String team;
+    private String key;
     private int state;
     private double longitude;
     private double latitude;
@@ -27,6 +28,13 @@ public class Warior {
     }
     public void setTeam(String team) {
         this.team = team;
+    }
+
+    public String getKey() {
+        return key;
+    }
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public int getState() {

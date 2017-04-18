@@ -91,6 +91,7 @@ public class LocationService extends Service
         warior.setLongitude(longitude);
         warior.setName(Connection.getInstance().getUserName());
         warior.setTeam(Connection.getInstance().getTeam());
+        warior.setKey(Connection.getInstance().getUserKey());
         warior.setDate(new Date());
         FbHelper.updateWariorPosition(warior);
     }

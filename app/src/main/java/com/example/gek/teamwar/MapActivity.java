@@ -24,9 +24,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -50,10 +53,12 @@ public class MapActivity extends FragmentActivity
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private float mZoomMap = Const.ZOOM_MAP;
+    private BitmapDescriptor bdIam;
     private SharedPreferences sharedPreferences;
     private CameraUpdate mCameraUpdate;
     private ArrayList<Warior> mListWariors;
     private Boolean mIsAllReady = false;
+    private LatLng mMyLocation;
 
 
     @Override
@@ -75,8 +80,8 @@ public class MapActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-      //  bdPizza = BitmapDescriptorFactory.fromResource(R.drawable.local_pizza_map);
+        bdIam = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
+//        bdPizza = BitmapDescriptorFactory.fromResource(R.drawable.local_pizza_map);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -124,12 +129,35 @@ public class MapActivity extends FragmentActivity
      * Refresh the map
      */
     private void updateUi() {
+        Log.d(TAG, "updateUi: ");
         mMap.clear();
         if (mListWariors != null){
-            for (Warior warior: mListWariors){
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
-                        .title(warior.getName()));
+            for (Warior warior: mListWariors) {
+                // i am
+                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
+                    mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
+                            .icon(bdIam)
+                            .title("I am"));
+                } else {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
+                            .title(warior.getName()));
+                }
+            }
+        }
+
+        // save current zoom of camera and set normal zoom if first show the map
+        if (mMap.getCameraPosition().zoom > Const.ZOOM_MAP){
+            mZoomMap = mMap.getCameraPosition().zoom;
+        } else {
+            if (mZoomMap < mMap.getCameraPosition().zoom){
+                mZoomMap = Const.ZOOM_MAP;
+            }
+            if (mMyLocation != null){
+                mCameraUpdate = CameraUpdateFactory.newLatLngZoom(mMyLocation, mZoomMap);
+                mMap.moveCamera(mCameraUpdate);
             }
         }
 
@@ -232,7 +260,7 @@ public class MapActivity extends FragmentActivity
             mGoogleApiClient.disconnect();
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat(Const.SETTINGS_ZOOM, mZoomMap).apply();
+        editor.putFloat(Const.SETTINGS_ZOOM, mMap.getCameraPosition().zoom).apply();
         super.onStop();
     }
 

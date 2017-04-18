@@ -23,7 +23,7 @@ public class FbHelper {
         if (Connection.getInstance().getGroupPassword().length() > 0){
             db.child(Connection.getInstance().getGroupPassword())
                     .child(CHILD_WARIORS)
-                    .child(warior.getName())
+                    .child(warior.getKey())
                     .setValue(warior);
         }
     }

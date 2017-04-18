@@ -22,4 +22,18 @@ public class Utils {
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         ctx.startActivity(intent);
     }
+
+
+    /** Make name KEY for FireBase.
+     *  Delete character if found: . $ [ ] # /
+     *  */
+    public static String createWariorKey(String email){
+        email = email.replace(".", "");
+        email = email.replace("$", "");
+        email = email.replace("[", "");
+        email = email.replace("]", "");
+        email = email.replace("#", "");
+        email = email.replace("/", "");
+        return email;
+    }
 }
