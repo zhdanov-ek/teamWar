@@ -12,7 +12,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:text="Sign in" />
+        android:text="@string/action_sign_in" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -44,13 +44,13 @@
                     android:id="@+id/btnSignOut"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:text="Sign out" />
+                    android:text="@string/action_sign_out" />
 
                 <Button
                     android:id="@+id/btnStopService"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:text="Stop service"
+                    android:text="@string/action_disconnect"
                     android:visibility="gone"/>
 
             </LinearLayout>
@@ -65,8 +65,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:hint="Your nick name"
-                    android:lines="1" />
+                    android:hint="@string/hint_name"
+                    android:lines="1"
+                    android:maxLength="10"/>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -79,7 +80,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:hint="Password of group"
+                    android:hint="@string/hint_pass"
+                    android:inputType="textPassword"
+                    tools:text="mypassword"
                     android:lines="1"
                     android:maxLength="10" />
             </android.support.design.widget.TextInputLayout>
@@ -89,8 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Connect" />
-
+                android:text="@string/action_connect" />
 
         </LinearLayout>
     </ScrollView>

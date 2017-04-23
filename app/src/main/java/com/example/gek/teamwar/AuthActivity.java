@@ -162,10 +162,13 @@ public class AuthActivity extends AppCompatActivity
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             btnGoogleSignIn.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
-            btnStopService.setVisibility(
-                    Connection.getInstance(this).getServiceRunning() ?
-                    View.VISIBLE : View.GONE);
-
+            if (Connection.getInstance(this).getServiceRunning()){
+                btnStopService.setVisibility(View.VISIBLE);
+                btnConnectGroup.setText(getString(R.string.action_to_map));
+            } else {
+                btnStopService.setVisibility(View.GONE);
+                btnConnectGroup.setText(getString(R.string.action_connect));
+            }
         } else {
             btnGoogleSignIn.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
