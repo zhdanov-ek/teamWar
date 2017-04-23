@@ -1,6 +1,8 @@
 package com.example.gek.teamwar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Utils.Connection;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -40,6 +43,7 @@ public class AuthActivity extends AppCompatActivity
     private EditText etName;
     private EditText etPasswordGroup;
     private Boolean isProgressBarShow = false;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,9 @@ public class AuthActivity extends AppCompatActivity
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        etName.setText(mSharedPreferences.getString(Const.SETTINGS_NAME, ""));
+        etPasswordGroup.setText(mSharedPreferences.getString(Const.SETTINGS_PASS, ""));
     }
 
     private void findAllView() {
@@ -156,7 +163,7 @@ public class AuthActivity extends AppCompatActivity
             btnGoogleSignIn.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
             btnStopService.setVisibility(
-                    Connection.getInstance().getServiceRunning() ?
+                    Connection.getInstance(this).getServiceRunning() ?
                     View.VISIBLE : View.GONE);
 
         } else {
@@ -187,7 +194,7 @@ public class AuthActivity extends AppCompatActivity
     private void makeSignOut() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
-            Connection.getInstance().close();
+            Connection.getInstance(this).close();
 
             // TODO: 15.04.17 Stop service with location listener
 
@@ -197,16 +204,20 @@ public class AuthActivity extends AppCompatActivity
 
     private void connectToGroup(){
         if ((etName.getText().length() > 2) && (etPasswordGroup.getText().length() > 2)){
-            Connection.getInstance().setUserName(etName.getText().toString());
-            Connection.getInstance().setGroupPassword(etPasswordGroup.getText().toString());
-            Connection.getInstance().setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            Connection.getInstance(this).setUserName(etName.getText().toString());
+            Connection.getInstance(this).setGroupPassword(etPasswordGroup.getText().toString());
+            Connection.getInstance(this).setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            mSharedPreferences.edit().putString(Const.SETTINGS_NAME, etName.getText().toString()).apply();
+            mSharedPreferences.edit().putString(Const.SETTINGS_PASS, etPasswordGroup.getText().toString()).apply();
+            mSharedPreferences.edit().putString(Const.SETTINGS_EMAIL, Connection.getInstance(this).getUserEmail()).apply();
             startActivity(new Intent(this, MapActivity.class));
         }
     }
 
     private void stopLocationService(){
-        stopService(new Intent(this,LocationService.class));
-        Connection.getInstance().setServiceRunning(false);
+        stopService(new Intent(this, LocationService.class));
+        Connection.getInstance(this).setServiceRunning(false);
+        Log.d(TAG, "stopLocationService: setServiceRunning - false");
         updateUi();
     }
 

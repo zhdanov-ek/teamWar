@@ -14,6 +14,8 @@ import android.util.Log;
 
 public class Utils {
 
+
+
     // Open system settings of program
     public static void openPermissionSettings(Context ctx) {
         final Intent intent = new Intent();
@@ -30,7 +32,7 @@ public class Utils {
     /** Make name KEY for FireBase.
      *  Delete character if found: . $ [ ] # /
      *  */
-    public static String createWariorKey(String email){
+    public static String removeCriticalSymbols(String email){
         email = email.replace(".", "");
         email = email.replace("$", "");
         email = email.replace("[", "");

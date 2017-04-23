@@ -13,9 +13,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.gek.teamwar.Data.Const;
+import com.example.gek.teamwar.Data.Mark;
 import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.FbHelper;
@@ -28,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,8 +37,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Show the map with wariors and objects
@@ -52,7 +55,7 @@ public class MapActivity extends FragmentActivity
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MAP_ACTIVITY";
-    private LinearLayout llContainer;
+    private RelativeLayout rlContainer;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private float mZoomMap = Const.ZOOM_MAP;
@@ -60,8 +63,11 @@ public class MapActivity extends FragmentActivity
     private SharedPreferences sharedPreferences;
     private CameraUpdate mCameraUpdate;
     private ArrayList<Warior> mListWariors;
+    private ArrayList<Mark> mListMarks;
     private Boolean mIsAllReady = false;
     private LatLng mMyLocation;
+    private IconGenerator mIconGeneratorObject;
+    private IconGenerator mIconGeneratorWariors;
 
 
     @Override
@@ -75,7 +81,8 @@ public class MapActivity extends FragmentActivity
             mZoomMap = sharedPreferences.getFloat(Const.SETTINGS_ZOOM, Const.ZOOM_MAP);
         }
 
-        llContainer = (LinearLayout) findViewById(R.id.llContainer);
+        rlContainer = (RelativeLayout) findViewById(R.id.llContainer);
+        findViewById(R.id.fbAddObject).setOnClickListener(v -> addMark());
 
         // get location courier from DB
        // Const.db.child(Const.CHILD_COURIER).addValueEventListener(mPositionWariorsListener);
@@ -91,6 +98,17 @@ public class MapActivity extends FragmentActivity
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+
+        // Basis for objects
+        mIconGeneratorObject = new IconGenerator(this);
+        mIconGeneratorObject.setContentRotation(90);
+        mIconGeneratorObject.setStyle(IconGenerator.STYLE_ORANGE);
+
+        // Basis for wariors
+        mIconGeneratorWariors = new IconGenerator(this);
+        mIconGeneratorWariors.setContentRotation(90);
+        mIconGeneratorWariors.setStyle(IconGenerator.STYLE_GREEN);
     }
 
     // Map is ready. Check permissions and connect GoogleApiClient
@@ -117,7 +135,7 @@ public class MapActivity extends FragmentActivity
                     || (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)) {
                 mIsAllReady = true;
                 updateUi();
-                if (!Connection.getInstance().getServiceRunning()){
+                if (!Connection.getInstance(this).getServiceRunning()){
                     startService(new Intent(this,LocationService.class));
                 }
             }
@@ -137,7 +155,7 @@ public class MapActivity extends FragmentActivity
         // get my location. Need for get distance to other markers. Execute only after onCreate
         if ((mMyLocation == null) && (mListWariors != null)) {
             for (Warior warior : mListWariors) {
-                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
+                if (warior.getKey().contentEquals(Connection.getInstance(this).getUserKey())) {
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
                     break;
                 }
@@ -148,10 +166,10 @@ public class MapActivity extends FragmentActivity
             for (Warior warior: mListWariors) {
                 String distance;
                 // i am
-                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
+                if (warior.getKey().contentEquals(Connection.getInstance(this).getUserKey())) {
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
                     mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
+                            .position(mMyLocation)
                             .icon(bdIam)
                             .title("I am")
                             .zIndex(1.0f));         // Show over other markers (other have index 0 (default)
@@ -164,6 +182,22 @@ public class MapActivity extends FragmentActivity
                 }
             }
         }
+
+        if (mListMarks != null){
+            for (Mark mark: mListMarks){
+                String distance = "";
+                if (mMyLocation != null){
+                    distance = Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
+                            mark.getLatitude(), mark.getLongitude());
+                }
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromBitmap(mIconGeneratorObject.makeIcon(mark.getName())))
+                        .position(new LatLng(mark.getLatitude(), mark.getLongitude()))
+                        .anchor(mIconGeneratorObject.getAnchorU(), mIconGeneratorObject.getAnchorV());
+                mMap.addMarker(markerOptions.title(distance));
+            }
+        }
+
 
         // save current zoom of camera and set normal zoom if first show the map
         if (mMap.getCameraPosition().zoom > Const.ZOOM_MAP){
@@ -184,21 +218,29 @@ public class MapActivity extends FragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        FbHelper.db.child(Connection.getInstance().getGroupPassword())
+        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
                 .child(FbHelper.CHILD_WARIORS)
                 .addValueEventListener(mPositionWariorsListener);
+
+        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+                .child(FbHelper.CHILD_MARKS)
+                .addValueEventListener(mLocationMarksListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        FbHelper.db.child(Connection.getInstance().getGroupPassword())
+        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
                 .child(FbHelper.CHILD_WARIORS)
                 .removeEventListener(mPositionWariorsListener);
+
+        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+                .child(FbHelper.CHILD_MARKS)
+                .removeEventListener(mLocationMarksListener);
     }
 
     /**
-     * Listen location of courier from DB
+     * Listen location of wariors from DB
      */
     private ValueEventListener mPositionWariorsListener = new ValueEventListener() {
         @Override
@@ -210,6 +252,32 @@ public class MapActivity extends FragmentActivity
             mListWariors.clear();
             for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                 mListWariors.add(childSnapshot.getValue(Warior.class));
+            }
+
+            if ((mMap != null) && (mIsAllReady)) {
+                updateUi();
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e(TAG, "onCancelled: " + databaseError.getDetails());
+        }
+    };
+
+    /**
+     * Listen location of marks from DB
+     */
+    private ValueEventListener mLocationMarksListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.d(TAG, "onDataChange: get list locations of marks");
+            if (mListMarks == null) {
+                mListMarks = new ArrayList<>();
+            }
+            mListMarks.clear();
+            for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                mListMarks.add(childSnapshot.getValue(Mark.class));
             }
 
             if ((mMap != null) && (mIsAllReady)) {
@@ -255,7 +323,7 @@ public class MapActivity extends FragmentActivity
 
     // If permission can enable from settings OS show SnackBar
     private void showSnackToSettingsOpen() {
-        Snackbar.make(llContainer, R.string.permission_location_not_granded, Snackbar.LENGTH_LONG)
+        Snackbar.make(rlContainer, R.string.permission_location_not_granded, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_settings, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -269,6 +337,26 @@ public class MapActivity extends FragmentActivity
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
+    }
+
+    private void addMark(){
+        if (mMyLocation == null){
+            Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
+        } else {
+            String name = "mark2";
+            Mark mark = new Mark();
+            mark.setName(name);
+            mark.setOwnerName(Connection.getInstance(this).getUserName());
+            mark.setOwnerEmail(Connection.getInstance(this).getUserEmail());
+            mark.setLatitude(Connection.getInstance(this).getLastLocation().latitude);
+            mark.setLongitude(Connection.getInstance(this).getLastLocation().longitude);
+            mark.setDate(new Date());
+            String key = Utils.removeCriticalSymbols(mark.getOwnerEmail() + name);
+            mark.setKey(Utils.removeCriticalSymbols(key));
+            mark.setKey(Utils.removeCriticalSymbols(key));
+            FbHelper.updateMark(mark, this);
+        }
+
     }
 
     @Override

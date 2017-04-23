@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
@@ -50,7 +51,8 @@ public class LocationService extends Service
         }
         mGoogleApiClient.connect();
 
-        Connection.getInstance().setServiceRunning(true);
+        Connection.getInstance(this).setServiceRunning(true);
+        Log.d(TAG, "onStartCommand: setServiceRunning - true");
         return START_STICKY;
     }
 
@@ -79,6 +81,8 @@ public class LocationService extends Service
             if (mLastLocation != null) {
                 Log.d(TAG, "onConnected: Latitude = " + mLastLocation.getLatitude() +
                         " Longitude = " + mLastLocation.getLongitude());
+                Connection.getInstance(getBaseContext()).setLastLocation(
+                        new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
                 writePositionToDb(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             }
 
@@ -86,14 +90,16 @@ public class LocationService extends Service
     };
 
     private void writePositionToDb(Double latitude, Double longitude){
+        Log.d(TAG, "writePositionToDb: ");
         Warior warior = new Warior();
         warior.setLatitude(latitude);
         warior.setLongitude(longitude);
-        warior.setName(Connection.getInstance().getUserName());
-        warior.setTeam(Connection.getInstance().getTeam());
-        warior.setKey(Connection.getInstance().getUserKey());
+        warior.setName(Connection.getInstance(this).getUserName());
+        warior.setTeam(Connection.getInstance(this).getTeam());
+        warior.setKey(Connection.getInstance(this).getUserKey());
         warior.setDate(new Date());
-        FbHelper.updateWariorPosition(warior);
+        FbHelper.updateWariorPosition(warior, this);
+
     }
 
     @Override

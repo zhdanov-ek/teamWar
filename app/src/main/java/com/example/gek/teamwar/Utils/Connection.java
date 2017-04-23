@@ -1,5 +1,12 @@
 package com.example.gek.teamwar.Utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.gek.teamwar.Data.Const;
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by gek on 16.04.17.
  */
@@ -12,27 +19,31 @@ public class Connection {
     private String userEmail;
     private String userKey;
     private String team;
+    private LatLng lastLocation;
     private int delayTransferLocation;
-
-
-
+    private SharedPreferences sharedPreferences;
     private Boolean serviceRunning;
 
-    public static synchronized Connection getInstance(){
+    public static synchronized Connection getInstance(Context ctx){
         if (instance == null) {
-            instance = new Connection();
+            instance = new Connection(ctx);
         }
         return instance;
     }
 
     // Constructor
-    private Connection(){
+    private Connection(Context ctx){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
         groupPassword = "";
         userName = "";
         userEmail = "";
         userKey = "";
         delayTransferLocation = DEFAULT_DELAY;
         serviceRunning = false;
+        userName = sharedPreferences.getString(Const.SETTINGS_NAME, "");
+        groupPassword = sharedPreferences.getString(Const.SETTINGS_PASS, "");
+        setUserEmail(sharedPreferences.getString(Const.SETTINGS_EMAIL, ""));
+
     }
 
     public void close(){
@@ -40,6 +51,16 @@ public class Connection {
         userName = "";
         userEmail = "";
         delayTransferLocation = DEFAULT_DELAY;
+        sharedPreferences.edit().putString(Const.SETTINGS_NAME, "").apply();
+        sharedPreferences.edit().putString(Const.SETTINGS_PASS, "").apply();
+    }
+
+    public String toString(){
+        String s = "GroupPass=" + groupPassword +
+                ", name=" + userName +
+                ", email=" + userEmail +
+                ", serviceRunning=" + serviceRunning;
+        return s;
     }
 
     public String getGroupPassword() {
@@ -61,7 +82,7 @@ public class Connection {
     }
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-        userKey = Utils.createWariorKey(userEmail);
+        userKey = Utils.removeCriticalSymbols(userEmail);
     }
 
     public int getDelayTransferLocation() {
@@ -87,5 +108,12 @@ public class Connection {
 
     public String getUserKey() {
         return userKey;
+    }
+
+    public LatLng getLastLocation() {
+        return lastLocation;
+    }
+    public void setLastLocation(LatLng lastLocation) {
+        this.lastLocation = lastLocation;
     }
 }

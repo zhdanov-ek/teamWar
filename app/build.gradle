@@ -39,6 +39,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportVer"
     compile "com.android.support:design:$supportVer"
 
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+
 
     compile "com.google.firebase:firebase-auth:$googleVer"
     compile "com.google.firebase:firebase-database:$googleVer"
