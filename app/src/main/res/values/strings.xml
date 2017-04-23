@@ -7,15 +7,28 @@
 
     <string name="permission_location_not_granded">No permissions for use locales</string>
 
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_mark">Mark edit</string>
+
     <string name="action_connect">Connect</string>
     <string name="action_to_map">To map</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_out">Sign out</string>
     <string name="action_disconnect">Disconnect</string>
     <string name="action_settings">Settings</string>
+    <string name="action_add_mark">Add new mark</string>
 
     <string name="hint_name">Your nick name</string>
     <string name="hint_pass">Password of group</string>
+    <string name="hint_mark">Description of mark</string>
 
-    <string name="title_activity_maps">Map</string>
+    <string name="mark_resp">Resp of my side</string>
+    <string name="mark_resp_enemy">Resp of enemy</string>
+    <string name="mark_base">Base of my side</string>
+    <string name="mark_base_enemy">Base of enemy</string>
+
+    <string name="mark_of_my_side">Mark of my side</string>
+    <string name="mark_of_enemy">Mark of enemy</string>
+    <string name="mark_neutral">Neutral mark</string>
+
 </resources>

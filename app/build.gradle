@@ -39,7 +39,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportVer"
     compile "com.android.support:design:$supportVer"
 
-    compile 'com.google.maps.android:android-maps-utils:0.4+'
 
 
     compile "com.google.firebase:firebase-auth:$googleVer"
@@ -48,10 +47,11 @@ dependencies {
     compile "com.google.android.gms:play-services-maps:$googleVer"
     compile "com.google.android.gms:play-services-location:$googleVer"
     compile "com.google.android.gms:play-services-auth:$googleVer"
+
+
+    compile 'com.google.maps.android:android-maps-utils:0.4.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-
-
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Show the map with wariors and objects
@@ -66,8 +65,7 @@ public class MapActivity extends FragmentActivity
     private ArrayList<Mark> mListMarks;
     private Boolean mIsAllReady = false;
     private LatLng mMyLocation;
-    private IconGenerator mIconGeneratorObject;
-    private IconGenerator mIconGeneratorWariors;
+    private IconGenerator mIconGenerator;
 
 
     @Override
@@ -82,7 +80,7 @@ public class MapActivity extends FragmentActivity
         }
 
         rlContainer = (RelativeLayout) findViewById(R.id.llContainer);
-        findViewById(R.id.fbAddObject).setOnClickListener(v -> addMark());
+        findViewById(R.id.fbAddObject).setOnClickListener(v -> addNewMark());
 
         // get location courier from DB
        // Const.db.child(Const.CHILD_COURIER).addValueEventListener(mPositionWariorsListener);
@@ -101,14 +99,9 @@ public class MapActivity extends FragmentActivity
 
 
         // Basis for objects
-        mIconGeneratorObject = new IconGenerator(this);
-        mIconGeneratorObject.setContentRotation(90);
-        mIconGeneratorObject.setStyle(IconGenerator.STYLE_ORANGE);
-
-        // Basis for wariors
-        mIconGeneratorWariors = new IconGenerator(this);
-        mIconGeneratorWariors.setContentRotation(90);
-        mIconGeneratorWariors.setStyle(IconGenerator.STYLE_GREEN);
+        mIconGenerator = new IconGenerator(this);
+        mIconGenerator.setContentRotation(90);
+        mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
     }
 
     // Map is ready. Check permissions and connect GoogleApiClient
@@ -122,6 +115,20 @@ public class MapActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         locationAndMapSettings();
+    }
+
+
+    /** Open Activity for create new mark */
+    private void addNewMark(){
+        if (mMyLocation != null) {
+            Intent intentNewMark = new Intent(this, MarkActivity.class);
+            intentNewMark.putExtra(Const.EXTRA_MODE, Const.MODE_MARK_NEW);
+            intentNewMark.putExtra(Const.EXTRA_LATITUDE, mMyLocation.latitude);
+            intentNewMark.putExtra(Const.EXTRA_LONGITUDE, mMyLocation.longitude);
+            startActivity(intentNewMark);
+        } else {
+            Toast.makeText(this, "No location", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -190,10 +197,25 @@ public class MapActivity extends FragmentActivity
                     distance = Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
                             mark.getLatitude(), mark.getLongitude());
                 }
+                switch (mark.getType()){
+                    case Const.TYPE_MARK_OWN:
+                        mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+                        break;
+                    case Const.TYPE_MARK_ENEMY:
+                        mIconGenerator.setStyle(IconGenerator.STYLE_RED);
+                        break;
+                    case Const.TYPE_MARK_NEUTRAL:
+                        mIconGenerator.setStyle(IconGenerator.STYLE_PURPLE);
+                        break;
+                    default:
+                        mIconGenerator.setStyle(IconGenerator.STYLE_PURPLE);
+                        break;
+                }
+
                 MarkerOptions markerOptions = new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromBitmap(mIconGeneratorObject.makeIcon(mark.getName())))
+                        .icon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon(mark.getName())))
                         .position(new LatLng(mark.getLatitude(), mark.getLongitude()))
-                        .anchor(mIconGeneratorObject.getAnchorU(), mIconGeneratorObject.getAnchorV());
+                        .anchor(mIconGenerator.getAnchorU(), mIconGenerator.getAnchorV());
                 mMap.addMarker(markerOptions.title(distance));
             }
         }
@@ -337,26 +359,6 @@ public class MapActivity extends FragmentActivity
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
-    }
-
-    private void addMark(){
-        if (mMyLocation == null){
-            Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
-        } else {
-            String name = "mark2";
-            Mark mark = new Mark();
-            mark.setName(name);
-            mark.setOwnerName(Connection.getInstance(this).getUserName());
-            mark.setOwnerEmail(Connection.getInstance(this).getUserEmail());
-            mark.setLatitude(Connection.getInstance(this).getLastLocation().latitude);
-            mark.setLongitude(Connection.getInstance(this).getLastLocation().longitude);
-            mark.setDate(new Date());
-            String key = Utils.removeCriticalSymbols(mark.getOwnerEmail() + name);
-            mark.setKey(Utils.removeCriticalSymbols(key));
-            mark.setKey(Utils.removeCriticalSymbols(key));
-            FbHelper.updateMark(mark, this);
-        }
-
     }
 
     @Override

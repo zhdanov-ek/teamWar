@@ -16,6 +16,7 @@ public class Mark {
     private double longitude;
     private double latitude;
     private Date date;
+    private int type;
 
     public String getName() {
         return name;
@@ -64,5 +65,12 @@ public class Mark {
     }
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getType() {
+        return type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
 }

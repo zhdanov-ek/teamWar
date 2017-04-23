@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.gek.teamwar.MarkActivity">
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rbMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_of_my_side" />
+
+        <RadioButton
+            android:id="@+id/rbMarkEnemy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_of_enemy" />
+
+        <RadioButton
+            android:id="@+id/rbMarkNeutral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_neutral" />
+
+    </RadioGroup>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etMarkName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/hint_mark"
+            android:maxLength="10" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnAddMark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:enabled="false"
+        android:text="@string/action_add_mark" />
+
+
+</LinearLayout>

@@ -14,5 +14,14 @@ public class Const {
     public static final float ZOOM_MAP = 10;
     public static final int  LOCATION_INTERVAL_UPDATE = 5;
 
+    public static final String EXTRA_LONGITUDE = "longitude";
+    public static final String EXTRA_LATITUDE = "latitude";
 
+    public static final String EXTRA_MODE = "mode_edit";
+    public static final int MODE_MARK_NEW = 1;
+    public static final int MODE_MARK_EDIT = 2;
+
+    public static final int TYPE_MARK_NEUTRAL = 1;
+    public static final int TYPE_MARK_OWN = 2;
+    public static final int TYPE_MARK_ENEMY = 3;
 }
