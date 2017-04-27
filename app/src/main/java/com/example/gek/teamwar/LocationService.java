@@ -23,10 +23,11 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Date;
 
 public class LocationService extends Service
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
     private static final String TAG = "LOCATION_SERVICE";
 
     public LocationService() {
@@ -56,38 +57,29 @@ public class LocationService extends Service
         return START_STICKY;
     }
 
+    /** Init configuration for location: priority, interval and callback*/
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        initLocationSettings();
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(Const.LOCATION_INTERVAL_UPDATE * 1000);
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
         Log.d(TAG, "onConnected: connect to GoogleApiClient");
     }
 
-    /** Init configuration for location: priority, interval and callback*/
-    private void initLocationSettings(){
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setInterval(Const.LOCATION_INTERVAL_UPDATE * 1000);
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, mLocationListener);
-        Log.d(TAG, "initLocationSettings: ");
+    /** Get coordinates of current WARIOR position */
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null){
+            Log.d(TAG, "onConnected: Latitude = " + location.getLatitude() +
+                    " Longitude = " + location.getLongitude());
+            Connection.getInstance(getBaseContext()).setLastLocation(
+                    new LatLng(location.getLatitude(), location.getLongitude()));
+            writePositionToDb(location.getLatitude(), location.getLongitude());
+        }
     }
 
-
-    /** Get coordinates of current WARIOR position */
-    LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                Log.d(TAG, "onConnected: Latitude = " + mLastLocation.getLatitude() +
-                        " Longitude = " + mLastLocation.getLongitude());
-                Connection.getInstance(getBaseContext()).setLastLocation(
-                        new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-                writePositionToDb(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            }
-
-        }
-    };
 
     private void writePositionToDb(Double latitude, Double longitude){
         Log.d(TAG, "writePositionToDb: ");
@@ -127,6 +119,5 @@ public class LocationService extends Service
         Log.d(TAG, "onDestroy: disconnect from GoogleApiClient");
         super.onDestroy();
     }
-
 
 }
