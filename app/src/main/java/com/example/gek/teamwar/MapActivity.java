@@ -32,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -100,7 +101,7 @@ public class MapActivity extends FragmentActivity
 
         // Basis for objects
         mIconGenerator = new IconGenerator(this);
-        mIconGenerator.setContentRotation(90);
+        mIconGenerator.setContentRotation(-90);
         mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
     }
 
@@ -141,6 +142,11 @@ public class MapActivity extends FragmentActivity
                     && this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                     || (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)) {
                 mIsAllReady = true;
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setCompassEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
                 updateUi();
                 if (!Connection.getInstance().getServiceRunning()){
                     startService(new Intent(this,LocationService.class));
