@@ -31,12 +31,12 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
         sbRate.setOnSeekBarChangeListener(this);
         updateFrequancy(Connection.getInstance(this).getFrequancyLocationUpdate());
-        sbRate.setProgress(Connection.getInstance(this).getFrequancyLocationUpdate()/20 - 1);
+        sbRate.setProgress(Connection.getInstance(this).getFrequancyLocationUpdate()/Const.BASE_STEP_FREQUENCY - 1);
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        int frequancy = seekBar.getProgress()*20 + 20;
+        int frequancy = seekBar.getProgress() * Const.BASE_STEP_FREQUENCY + Const.BASE_STEP_FREQUENCY;
         updateFrequancy(frequancy);
         Log.d(TAG, "onProgressChanged: ");
     }
@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         Log.d(TAG, "onStopTrackingTouch: ");
-        int frequancy = seekBar.getProgress()*20 + 20;
+        int frequancy = seekBar.getProgress() * Const.BASE_STEP_FREQUENCY + Const.BASE_STEP_FREQUENCY;
         Connection.getInstance(this).setFrequancyLocationUpdate(frequancy);
     }
 

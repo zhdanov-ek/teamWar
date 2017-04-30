@@ -1,19 +1,22 @@
 package com.example.gek.teamwar.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.example.gek.teamwar.Data.Const;
+import com.example.gek.teamwar.LocationService;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by gek on 16.04.17.
+ * Store status of AUTH, state of service and value of basic parameters
  */
 
 public class Connection {
-    public static final int DEFAULT_FREQUANCY = 60;
+    private static final int DEFAULT_FREQUANCY = 60;
     private static Connection instance;
+    private Context ctx;
     private String groupPassword;
     private String userName;
     private String userEmail;
@@ -34,6 +37,7 @@ public class Connection {
     // Constructor
     private Connection(Context ctx){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
+        this.ctx = ctx;
         groupPassword = "";
         userName = "";
         userEmail = "";
@@ -43,7 +47,6 @@ public class Connection {
         userName = sharedPreferences.getString(Const.SETTINGS_NAME, "");
         groupPassword = sharedPreferences.getString(Const.SETTINGS_PASS, "");
         setUserEmail(sharedPreferences.getString(Const.SETTINGS_EMAIL, ""));
-
     }
 
     public void close(){
@@ -114,8 +117,10 @@ public class Connection {
     }
     public void setFrequancyLocationUpdate(int frequancyLocationUpdate) {
         this.frequancyLocationUpdate = frequancyLocationUpdate;
-
         sharedPreferences.edit().putInt(Const.SETTINGS_FREQUANCY, frequancyLocationUpdate).apply();
-        // TODO: 30.04.17 if service is running - restart his with new settings
+        if (serviceRunning){
+            ctx.stopService(new Intent(ctx, LocationService.class));
+            ctx.startService(new Intent(ctx, LocationService.class));
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.example.gek.teamwar.Data;
 
 /**
- * Created by gek on 17.04.17.
+ * Constants of the application
  */
 
 public class Const {
@@ -13,6 +13,8 @@ public class Const {
 
     public static final int REQUEST_CODE_LOCATION = 3;
     public static final float ZOOM_MAP = 10;
+
+    public static final int BASE_STEP_FREQUENCY = 5;
 
     public static final String EXTRA_LONGITUDE = "longitude";
     public static final String EXTRA_LATITUDE = "latitude";

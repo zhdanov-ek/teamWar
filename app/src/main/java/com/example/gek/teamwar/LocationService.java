@@ -1,14 +1,20 @@
 package com.example.gek.teamwar;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.FbHelper;
@@ -27,6 +33,8 @@ public class LocationService extends Service
         LocationListener{
 
     private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private Handler handler = new Handler();
     private static final String TAG = "LOCATION_SERVICE";
 
     public LocationService() {
@@ -34,6 +42,7 @@ public class LocationService extends Service
 
     @Override
     public void onCreate() {
+        Log.d(TAG, "onCreate: ");
         super.onCreate();
     }
 
@@ -50,21 +59,58 @@ public class LocationService extends Service
                     .build();
         }
         mGoogleApiClient.connect();
-
         Connection.getInstance(this).setServiceRunning(true);
         Log.d(TAG, "onStartCommand: setServiceRunning - true");
         return START_STICKY;
     }
 
-    /** Init configuration for location: priority, interval and callback*/
+    /** Init configuration for location: priority, interval and callback */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(Connection.getInstance(this).getFrequancyLocationUpdate() * 1000);
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+        handler.post(runnableGetLocation);
         Log.d(TAG, "onConnected: connect to GoogleApiClient");
+    }
+
+    // start every n-seconds for get location if service running
+    private Runnable runnableGetLocation = new Runnable() {
+        @Override
+        public void run() {
+            if (Connection.getInstance(getBaseContext()).getServiceRunning()){
+                handler.postDelayed(this, Connection.getInstance(getBaseContext()).getFrequancyLocationUpdate()*1000);
+                startLocationUpdates();
+                handler.postDelayed(() -> stopLocationUpdates(), (Const.BASE_STEP_FREQUENCY - 1)*1000);
+            } else {
+                stopLocationUpdates();
+            }
+        }
+    };
+
+
+    /** set request for retrieve current location */
+    private void startLocationUpdates() {
+        if (mGoogleApiClient.isConnected()){
+            if (checkLocationPermission()) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest, this);
+            } else {
+                Toast.makeText(getBaseContext(), "No permissions for location", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            mGoogleApiClient.connect();
+        }
+    }
+
+
+    /** stop listen update about our location */
+    private void stopLocationUpdates() {
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
     }
 
     /** Get coordinates of current WARIOR position */
@@ -78,7 +124,6 @@ public class LocationService extends Service
             writePositionToDb(location.getLatitude(), location.getLongitude());
         }
     }
-
 
     private void writePositionToDb(Double latitude, Double longitude){
         Log.d(TAG, "writePositionToDb: ");
@@ -97,6 +142,14 @@ public class LocationService extends Service
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+
+
+    private Boolean checkLocationPermission() {
+        return ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                || (Build.VERSION.SDK_INT < Build.VERSION_CODES.M));
     }
 
 
