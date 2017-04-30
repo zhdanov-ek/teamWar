@@ -1,11 +1,10 @@
 package com.example.gek.teamwar.Utils;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.example.gek.teamwar.Data.Const;
+import com.example.gek.teamwar.Data.TeamWar;
 import com.example.gek.teamwar.LocationService;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,7 +15,6 @@ import com.google.android.gms.maps.model.LatLng;
 public class Connection {
     private static final int DEFAULT_FREQUANCY = 60;
     private static Connection instance;
-    private Context ctx;
     private String groupPassword;
     private String userName;
     private String userEmail;
@@ -27,17 +25,16 @@ public class Connection {
     private Boolean serviceRunning;
     private int frequancyLocationUpdate;
 
-    public static synchronized Connection getInstance(Context ctx){
+    public static synchronized Connection getInstance(){
         if (instance == null) {
-            instance = new Connection(ctx);
+            instance = new Connection();
         }
         return instance;
     }
 
     // Constructor
-    private Connection(Context ctx){
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
-        this.ctx = ctx;
+    private Connection(){
+        sharedPreferences = TeamWar.getInstance().getPreferences();
         groupPassword = "";
         userName = "";
         userEmail = "";
@@ -118,9 +115,5 @@ public class Connection {
     public void setFrequancyLocationUpdate(int frequancyLocationUpdate) {
         this.frequancyLocationUpdate = frequancyLocationUpdate;
         sharedPreferences.edit().putInt(Const.SETTINGS_FREQUANCY, frequancyLocationUpdate).apply();
-        if (serviceRunning){
-            ctx.stopService(new Intent(ctx, LocationService.class));
-            ctx.startService(new Intent(ctx, LocationService.class));
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.gek.teamwar;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -59,7 +61,7 @@ public class LocationService extends Service
                     .build();
         }
         mGoogleApiClient.connect();
-        Connection.getInstance(this).setServiceRunning(true);
+        Connection.getInstance().setServiceRunning(true);
         Log.d(TAG, "onStartCommand: setServiceRunning - true");
         return START_STICKY;
     }
@@ -73,6 +75,7 @@ public class LocationService extends Service
         mLocationRequest.setFastestInterval(1000);
 
         handler.post(runnableGetLocation);
+        showNotification();
         Log.d(TAG, "onConnected: connect to GoogleApiClient");
     }
 
@@ -80,8 +83,8 @@ public class LocationService extends Service
     private Runnable runnableGetLocation = new Runnable() {
         @Override
         public void run() {
-            if (Connection.getInstance(getBaseContext()).getServiceRunning()){
-                handler.postDelayed(this, Connection.getInstance(getBaseContext()).getFrequancyLocationUpdate()*1000);
+            if (Connection.getInstance().getServiceRunning()){
+                handler.postDelayed(this, Connection.getInstance().getFrequancyLocationUpdate()*1000);
                 startLocationUpdates();
                 handler.postDelayed(() -> stopLocationUpdates(), (Const.BASE_STEP_FREQUENCY - 1)*1000);
             } else {
@@ -119,7 +122,7 @@ public class LocationService extends Service
         if (location != null){
             Log.d(TAG, "onConnected: Latitude = " + location.getLatitude() +
                     " Longitude = " + location.getLongitude());
-            Connection.getInstance(getBaseContext()).setLastLocation(
+            Connection.getInstance().setLastLocation(
                     new LatLng(location.getLatitude(), location.getLongitude()));
             writePositionToDb(location.getLatitude(), location.getLongitude());
         }
@@ -130,12 +133,34 @@ public class LocationService extends Service
         Warior warior = new Warior();
         warior.setLatitude(latitude);
         warior.setLongitude(longitude);
-        warior.setName(Connection.getInstance(this).getUserName());
-        warior.setTeam(Connection.getInstance(this).getTeam());
-        warior.setKey(Connection.getInstance(this).getUserKey());
+        warior.setName(Connection.getInstance().getUserName());
+        warior.setTeam(Connection.getInstance().getTeam());
+        warior.setKey(Connection.getInstance().getUserKey());
         warior.setDate(new Date());
-        FbHelper.updateWariorPosition(warior, this);
+        FbHelper.updateWariorPosition(warior);
 
+    }
+
+    private void showNotification() {
+        NotificationCompat.Builder nfBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_man_run)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.mes_service_work))
+                        .setShowWhen(false);
+
+        // create pending intent used when tapping on the app notification
+        // open up ScreenMapFragment
+        Intent intent = new Intent(this, AuthActivity.class);
+
+
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(
+                        this, 0, intent, 0);
+        nfBuilder.setContentIntent(pendingIntent);
+
+        // end notification and mark service how high priority
+        startForeground(Const.NOTIFICATION_ID, nfBuilder.build());
     }
 
     @Override

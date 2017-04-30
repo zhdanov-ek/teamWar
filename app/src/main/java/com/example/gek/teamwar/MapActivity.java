@@ -142,7 +142,7 @@ public class MapActivity extends FragmentActivity
                     || (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)) {
                 mIsAllReady = true;
                 updateUi();
-                if (!Connection.getInstance(this).getServiceRunning()){
+                if (!Connection.getInstance().getServiceRunning()){
                     startService(new Intent(this,LocationService.class));
                 }
             }
@@ -162,7 +162,7 @@ public class MapActivity extends FragmentActivity
         // get my location. Need for get distance to other markers. Execute only after onCreate
         if ((mMyLocation == null) && (mListWariors != null)) {
             for (Warior warior : mListWariors) {
-                if (warior.getKey().contentEquals(Connection.getInstance(this).getUserKey())) {
+                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
                     break;
                 }
@@ -173,7 +173,7 @@ public class MapActivity extends FragmentActivity
             for (Warior warior: mListWariors) {
                 String distance;
                 // i am
-                if (warior.getKey().contentEquals(Connection.getInstance(this).getUserKey())) {
+                if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
                     mMap.addMarker(new MarkerOptions()
                             .position(mMyLocation)
@@ -240,11 +240,11 @@ public class MapActivity extends FragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
                 .child(FbHelper.CHILD_WARIORS)
                 .addValueEventListener(mPositionWariorsListener);
 
-        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
                 .child(FbHelper.CHILD_MARKS)
                 .addValueEventListener(mLocationMarksListener);
     }
@@ -252,11 +252,11 @@ public class MapActivity extends FragmentActivity
     @Override
     protected void onPause() {
         super.onPause();
-        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
                 .child(FbHelper.CHILD_WARIORS)
                 .removeEventListener(mPositionWariorsListener);
 
-        FbHelper.db.child(Connection.getInstance(this).getGroupPassword())
+        FbHelper.db.child(Connection.getInstance().getGroupPassword())
                 .child(FbHelper.CHILD_MARKS)
                 .removeEventListener(mLocationMarksListener);
     }

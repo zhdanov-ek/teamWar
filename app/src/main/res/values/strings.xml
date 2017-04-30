@@ -10,6 +10,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_mark">Mark edit</string>
 
+    <string name="mes_service_work">Your location detect in current moment</string>
+
     <string name="action_connect">Connect</string>
     <string name="action_to_map">To map</string>
     <string name="action_sign_in">Sign in</string>

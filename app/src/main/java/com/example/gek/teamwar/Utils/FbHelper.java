@@ -24,19 +24,19 @@ public class FbHelper {
     public static final String CHILD_MARKS = "marks";
 
 
-    public static void updateWariorPosition(Warior warior, Context ctx){
-        Log.d(TAG, "updateWariorPosition: " + Connection.getInstance(ctx).toString());
-        if (Connection.getInstance(ctx).getGroupPassword().length() > 0){
-            db.child(Connection.getInstance(ctx).getGroupPassword())
+    public static void updateWariorPosition(Warior warior){
+        Log.d(TAG, "updateWariorPosition: " + Connection.getInstance().toString());
+        if (Connection.getInstance().getGroupPassword().length() > 0){
+            db.child(Connection.getInstance().getGroupPassword())
                     .child(CHILD_WARIORS)
                     .child(warior.getKey())
                     .setValue(warior);
         }
     }
 
-    public static void updateMark(Mark mark, Context ctx){
-        if (Connection.getInstance(ctx).getGroupPassword().length() > 0){
-            db.child(Connection.getInstance(ctx).getGroupPassword())
+    public static void updateMark(Mark mark){
+        if (Connection.getInstance().getGroupPassword().length() > 0){
+            db.child(Connection.getInstance().getGroupPassword())
                     .child(CHILD_MARKS)
                     .child(mark.getKey())
                     .setValue(mark);

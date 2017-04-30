@@ -79,17 +79,17 @@ public class MarkActivity extends AppCompatActivity {
             String name = etMarkName.getText().toString();
             Mark mark = new Mark();
             mark.setName(name);
-            mark.setOwnerName(Connection.getInstance(this).getUserName());
-            mark.setOwnerEmail(Connection.getInstance(this).getUserEmail());
-            mark.setLatitude(Connection.getInstance(this).getLastLocation().latitude);
-            mark.setLongitude(Connection.getInstance(this).getLastLocation().longitude);
+            mark.setOwnerName(Connection.getInstance().getUserName());
+            mark.setOwnerEmail(Connection.getInstance().getUserEmail());
+            mark.setLatitude(Connection.getInstance().getLastLocation().latitude);
+            mark.setLongitude(Connection.getInstance().getLastLocation().longitude);
             mark.setType(mMarkType);
             mark.setDate(new Date());
             String key = Utils.removeCriticalSymbols(mark.getOwnerEmail() + name +
                     (mark.getLatitude() + mark.getLongitude()));
             mark.setKey(Utils.removeCriticalSymbols(key));
             mark.setKey(Utils.removeCriticalSymbols(key));
-            FbHelper.updateMark(mark, this);
+            FbHelper.updateMark(mark);
             etMarkName.setText("");
             radioGroup.clearCheck();
             finish();

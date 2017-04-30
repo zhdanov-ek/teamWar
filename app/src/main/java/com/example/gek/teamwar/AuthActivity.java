@@ -1,5 +1,6 @@
 package com.example.gek.teamwar;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -169,7 +170,7 @@ public class AuthActivity extends AppCompatActivity
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             btnGoogleSignIn.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
-            if (Connection.getInstance(this).getServiceRunning()){
+            if (Connection.getInstance().getServiceRunning()){
                 btnStopService.setVisibility(View.VISIBLE);
                 btnConnectGroup.setText(getString(R.string.action_to_map));
             } else {
@@ -204,7 +205,7 @@ public class AuthActivity extends AppCompatActivity
     private void makeSignOut() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
-            Connection.getInstance(this).close();
+            Connection.getInstance().close();
 
             // TODO: 15.04.17 Stop service with location listener
 
@@ -214,22 +215,25 @@ public class AuthActivity extends AppCompatActivity
 
     private void connectToGroup(){
         if ((etName.getText().length() > 2) && (etPasswordGroup.getText().length() > 2)){
-            Connection.getInstance(this).setUserName(etName.getText().toString());
-            Connection.getInstance(this).setGroupPassword(etPasswordGroup.getText().toString());
-            Connection.getInstance(this).setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            Connection.getInstance().setUserName(etName.getText().toString());
+            Connection.getInstance().setGroupPassword(etPasswordGroup.getText().toString());
+            Connection.getInstance().setUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
             mSharedPreferences.edit().putString(Const.SETTINGS_NAME, etName.getText().toString()).apply();
             mSharedPreferences.edit().putString(Const.SETTINGS_PASS, etPasswordGroup.getText().toString()).apply();
-            mSharedPreferences.edit().putString(Const.SETTINGS_EMAIL, Connection.getInstance(this).getUserEmail()).apply();
+            mSharedPreferences.edit().putString(Const.SETTINGS_EMAIL, Connection.getInstance().getUserEmail()).apply();
             startActivity(new Intent(this, MapActivity.class));
         }
     }
 
     private void stopLocationService(){
         stopService(new Intent(this, LocationService.class));
-        Connection.getInstance(this).setServiceRunning(false);
+        Connection.getInstance().setServiceRunning(false);
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
         Log.d(TAG, "stopLocationService: setServiceRunning - false");
         updateUi();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

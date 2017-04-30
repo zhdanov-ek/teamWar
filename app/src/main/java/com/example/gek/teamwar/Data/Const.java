@@ -16,6 +16,8 @@ public class Const {
 
     public static final int BASE_STEP_FREQUENCY = 5;
 
+    public static final int NOTIFICATION_ID = 1;
+
     public static final String EXTRA_LONGITUDE = "longitude";
     public static final String EXTRA_LATITUDE = "latitude";
 

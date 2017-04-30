@@ -30,8 +30,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         sbRate = (SeekBar) findViewById(R.id.sbRate);
 
         sbRate.setOnSeekBarChangeListener(this);
-        updateFrequancy(Connection.getInstance(this).getFrequancyLocationUpdate());
-        sbRate.setProgress(Connection.getInstance(this).getFrequancyLocationUpdate()/Const.BASE_STEP_FREQUENCY - 1);
+        updateFrequancy(Connection.getInstance().getFrequancyLocationUpdate());
+        sbRate.setProgress(Connection.getInstance().getFrequancyLocationUpdate()/Const.BASE_STEP_FREQUENCY - 1);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     public void onStopTrackingTouch(SeekBar seekBar) {
         Log.d(TAG, "onStopTrackingTouch: ");
         int frequancy = seekBar.getProgress() * Const.BASE_STEP_FREQUENCY + Const.BASE_STEP_FREQUENCY;
-        Connection.getInstance(this).setFrequancyLocationUpdate(frequancy);
+        Connection.getInstance().setFrequancyLocationUpdate(frequancy);
     }
 
 
