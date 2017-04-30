@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class Connection {
-    public static final int DEFAULT_DELAY = 5*1000;
+    public static final int DEFAULT_FREQUANCY = 60;
     private static Connection instance;
     private String groupPassword;
     private String userName;
@@ -20,9 +20,9 @@ public class Connection {
     private String userKey;
     private String team;
     private LatLng lastLocation;
-    private int delayTransferLocation;
     private SharedPreferences sharedPreferences;
     private Boolean serviceRunning;
+    private int frequancyLocationUpdate;
 
     public static synchronized Connection getInstance(Context ctx){
         if (instance == null) {
@@ -38,8 +38,8 @@ public class Connection {
         userName = "";
         userEmail = "";
         userKey = "";
-        delayTransferLocation = DEFAULT_DELAY;
         serviceRunning = false;
+        frequancyLocationUpdate = sharedPreferences.getInt(Const.SETTINGS_FREQUANCY, DEFAULT_FREQUANCY);
         userName = sharedPreferences.getString(Const.SETTINGS_NAME, "");
         groupPassword = sharedPreferences.getString(Const.SETTINGS_PASS, "");
         setUserEmail(sharedPreferences.getString(Const.SETTINGS_EMAIL, ""));
@@ -50,7 +50,6 @@ public class Connection {
         groupPassword = "";
         userName = "";
         userEmail = "";
-        delayTransferLocation = DEFAULT_DELAY;
         sharedPreferences.edit().putString(Const.SETTINGS_NAME, "").apply();
         sharedPreferences.edit().putString(Const.SETTINGS_PASS, "").apply();
     }
@@ -85,13 +84,6 @@ public class Connection {
         userKey = Utils.removeCriticalSymbols(userEmail);
     }
 
-    public int getDelayTransferLocation() {
-        return delayTransferLocation;
-    }
-    public void setDelayTransferLocation(int delayTransferLocation) {
-        this.delayTransferLocation = delayTransferLocation;
-    }
-
     public Boolean getServiceRunning() {
         return serviceRunning;
     }
@@ -115,5 +107,15 @@ public class Connection {
     }
     public void setLastLocation(LatLng lastLocation) {
         this.lastLocation = lastLocation;
+    }
+
+    public int getFrequancyLocationUpdate() {
+        return frequancyLocationUpdate;
+    }
+    public void setFrequancyLocationUpdate(int frequancyLocationUpdate) {
+        this.frequancyLocationUpdate = frequancyLocationUpdate;
+
+        sharedPreferences.edit().putInt(Const.SETTINGS_FREQUANCY, frequancyLocationUpdate).apply();
+        // TODO: 30.04.17 if service is running - restart his with new settings
     }
 }

@@ -6,7 +6,10 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +39,7 @@ public class AuthActivity extends AppCompatActivity
     private static String EXTRA_IS_PROGRESSBAR = "progress_bar";
     private GoogleApiClient mGoogleApiClient;
 
+    private Toolbar myToolbar;
     private ScrollView scrollView;
     private ProgressBar progressBar;
     private Button btnGoogleSignIn, btnSignOut, btnStopService;
@@ -69,6 +73,9 @@ public class AuthActivity extends AppCompatActivity
     }
 
     private void findAllView() {
+        myToolbar = (Toolbar) findViewById(R.id.toolBar);
+        setSupportActionBar(myToolbar);
+
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnGoogleSignIn = (Button) findViewById(R.id.btnGoogleSignIn);
@@ -224,4 +231,21 @@ public class AuthActivity extends AppCompatActivity
         updateUi();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.ab_settings:
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+                break;
+            case R.id.ab_about:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.gek.teamwar.AuthActivity">
+    <include layout="@layout/toolbar"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <Button
         android:id="@+id/btnGoogleSignIn"
         android:layout_width="150dp"
@@ -38,8 +43,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
                 <Button
                     android:id="@+id/btnSignOut"
                     android:layout_width="150dp"
@@ -82,9 +87,9 @@
                     android:gravity="center"
                     android:hint="@string/hint_pass"
                     android:inputType="textPassword"
-                    tools:text="mypassword"
                     android:lines="1"
-                    android:maxLength="10" />
+                    android:maxLength="10"
+                    tools:text="mypassword" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -96,6 +101,6 @@
 
         </LinearLayout>
     </ScrollView>
+    </RelativeLayout>
 
-
-</RelativeLayout>
+</LinearLayout>

@@ -42,7 +42,8 @@
 
         <service android:name=".LocationService" />
 
-        <activity android:name=".MarkActivity"></activity>
+        <activity android:name=".MarkActivity" />
+        <activity android:name=".SettingsActivity"/>
     </application>
 
 </manifest>

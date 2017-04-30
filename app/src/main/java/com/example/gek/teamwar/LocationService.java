@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.FbHelper;
@@ -62,7 +61,7 @@ public class LocationService extends Service
     public void onConnected(@Nullable Bundle bundle) {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(Const.LOCATION_INTERVAL_UPDATE * 1000);
+        locationRequest.setInterval(Connection.getInstance(this).getFrequancyLocationUpdate() * 1000);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
         Log.d(TAG, "onConnected: connect to GoogleApiClient");
@@ -101,7 +100,6 @@ public class LocationService extends Service
     }
 
 
-
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
@@ -110,12 +108,14 @@ public class LocationService extends Service
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed: ");
+        Log.d(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
     }
 
     @Override
     public void onDestroy() {
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient.isConnected()){
+            mGoogleApiClient.disconnect();
+        }
         Log.d(TAG, "onDestroy: disconnect from GoogleApiClient");
         super.onDestroy();
     }
