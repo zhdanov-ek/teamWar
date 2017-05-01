@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -34,7 +35,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -52,10 +56,13 @@ public class MapActivity extends FragmentActivity
         implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MAP_ACTIVITY";
     private RelativeLayout rlContainer;
+    private FloatingActionButton fbAddObject;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private float mZoomMap = Const.ZOOM_MAP;
@@ -67,6 +74,8 @@ public class MapActivity extends FragmentActivity
     private Boolean mIsAllReady = false;
     private LatLng mMyLocation;
     private IconGenerator mIconGenerator;
+    private PolylineOptions mPathOptions;
+    private Mark mChoosedMark = null;
 
 
     @Override
@@ -81,7 +90,8 @@ public class MapActivity extends FragmentActivity
         }
 
         rlContainer = (RelativeLayout) findViewById(R.id.llContainer);
-        findViewById(R.id.fbAddObject).setOnClickListener(v -> addNewMark());
+        fbAddObject = (FloatingActionButton) findViewById(R.id.fbAddObject);
+        fbAddObject.setOnClickListener(v -> workWithMark());
 
         // get location courier from DB
        // Const.db.child(Const.CHILD_COURIER).addValueEventListener(mPositionWariorsListener);
@@ -109,6 +119,8 @@ public class MapActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         connectToGoogleApiClient();
     }
 
@@ -119,18 +131,32 @@ public class MapActivity extends FragmentActivity
     }
 
 
-    /** Open Activity for create new mark */
-    private void addNewMark(){
-        if (mMyLocation != null) {
-            Intent intentNewMark = new Intent(this, MarkActivity.class);
-            intentNewMark.putExtra(Const.EXTRA_MODE, Const.MODE_MARK_NEW);
-            intentNewMark.putExtra(Const.EXTRA_LATITUDE, mMyLocation.latitude);
-            intentNewMark.putExtra(Const.EXTRA_LONGITUDE, mMyLocation.longitude);
-            startActivity(intentNewMark);
+    private void workWithMark(){
+        if (mChoosedMark == null){
+            if (mMyLocation != null) {
+                Intent intentNewMark = new Intent(this, MarkActivity.class);
+                intentNewMark.putExtra(Const.EXTRA_MODE, Const.MODE_MARK_NEW);
+                intentNewMark.putExtra(Const.EXTRA_LATITUDE, mMyLocation.latitude);
+                intentNewMark.putExtra(Const.EXTRA_LONGITUDE, mMyLocation.longitude);
+                startActivity(intentNewMark);
+            } else {
+                Toast.makeText(this, "No location", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, "No location", Toast.LENGTH_SHORT).show();
+            FbHelper.removeMark(mChoosedMark);
+            Mark removedMark = mChoosedMark;
+            mChoosedMark = null;
+            fbAddObject.setImageResource(R.drawable.ic_add_location);
+            Snackbar.make(fbAddObject, R.string.mes_mark_removed, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.restore, v -> {
+                        FbHelper.updateMark(removedMark);
+                        updateUi();
+                    }).setActionTextColor(getResources().getColor(R.color.colorCyan))
+                    .show();
+            updateUi();
         }
     }
+
 
 
     /**
@@ -222,8 +248,12 @@ public class MapActivity extends FragmentActivity
                         .icon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon(mark.getName())))
                         .position(new LatLng(mark.getLatitude(), mark.getLongitude()))
                         .anchor(mIconGenerator.getAnchorU(), mIconGenerator.getAnchorV());
-                mMap.addMarker(markerOptions.title(distance));
+                mMap.addMarker(markerOptions.title(distance)).setTag(mark);
             }
+        }
+
+        if (mPathOptions != null){
+            mMap.addPolyline(mPathOptions);
         }
 
 
@@ -381,4 +411,28 @@ public class MapActivity extends FragmentActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if (marker.getPosition() != mMyLocation){
+            mPathOptions = new PolylineOptions()
+                    .color(getResources().getColor(R.color.colorRed));
+            mPathOptions.add(mMyLocation);
+            mPathOptions.add(marker.getPosition());
+            updateUi();
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (marker.getTag() != null){
+            Mark choosedMark = (Mark) marker.getTag();
+            Toast.makeText(this, "Point " + choosedMark.getName(), Toast.LENGTH_SHORT).show();
+            fbAddObject.setImageResource(R.drawable.ic_delete);
+            mChoosedMark = choosedMark;
+        } else {
+            fbAddObject.setImageResource(R.drawable.ic_add_location);
+            mChoosedMark = null;
+        }
+        return false;
+    }
 }

@@ -43,5 +43,14 @@ public class FbHelper {
         }
     }
 
+    public static void removeMark(Mark mark){
+        if (Connection.getInstance().getGroupPassword().length() > 0){
+            db.child(Connection.getInstance().getGroupPassword())
+                    .child(CHILD_MARKS)
+                    .child(mark.getKey())
+                    .setValue(null);
+        }
+    }
+
 
 }

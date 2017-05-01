@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.gek.teamwar.MarkActivity">
+    <include layout="@layout/toolbar"/>
 
     <RadioGroup
         android:id="@+id/radioGroup"
