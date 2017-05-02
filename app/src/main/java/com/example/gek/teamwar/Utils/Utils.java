@@ -89,4 +89,10 @@ public class Utils {
         }
         return directions[index];
     }
+
+    /** Validate Latitude and Longitude */
+    public static Boolean validateLatLong(double lat, double lng){
+        return (((lat >= -90) && (lat <= 90)) &&
+                ((lng >= -180) && (lng <= 180)));
+    }
 }

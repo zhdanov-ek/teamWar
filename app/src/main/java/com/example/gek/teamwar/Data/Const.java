@@ -25,6 +25,10 @@ public class Const {
     public static final int MODE_MARK_NEW = 1;
     public static final int MODE_MARK_EDIT = 2;
 
+
+    public static final int TYPE_MARK_MODE_CURRENT = 0;
+    public static final int TYPE_MARK_MODE_MANUAL = 1;
+
     public static final int TYPE_MARK_NEUTRAL = 1;
     public static final int TYPE_MARK_OWN = 2;
     public static final int TYPE_MARK_ENEMY = 3;
