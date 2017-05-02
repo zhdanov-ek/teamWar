@@ -58,7 +58,7 @@ public class MapActivity extends FragmentActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private static final String TAG = "MAP_ACTIVITY";
     private RelativeLayout rlContainer;
@@ -111,7 +111,7 @@ public class MapActivity extends FragmentActivity
 
         // Basis for objects
         mIconGenerator = new IconGenerator(this);
-        mIconGenerator.setContentRotation(-90);
+      //  mIconGenerator.setContentRotation(-90);
         mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
     }
 
@@ -121,6 +121,7 @@ public class MapActivity extends FragmentActivity
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
         connectToGoogleApiClient();
     }
 
@@ -173,6 +174,7 @@ public class MapActivity extends FragmentActivity
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 mMap.getUiSettings().setRotateGesturesEnabled(true);
+                mMap.getUiSettings().setMapToolbarEnabled(false);
                 updateUi();
                 if (!Connection.getInstance().getServiceRunning()){
                     startService(new Intent(this,LocationService.class));
@@ -418,6 +420,9 @@ public class MapActivity extends FragmentActivity
                     .color(getResources().getColor(R.color.colorRed));
             mPathOptions.add(mMyLocation);
             mPathOptions.add(marker.getPosition());
+
+            String direction = Utils.getDirection(marker.getPosition(), mMyLocation);
+            Toast.makeText(this, "Direction  " + direction, Toast.LENGTH_LONG).show();
             updateUi();
         }
     }
@@ -426,7 +431,6 @@ public class MapActivity extends FragmentActivity
     public boolean onMarkerClick(Marker marker) {
         if (marker.getTag() != null){
             Mark choosedMark = (Mark) marker.getTag();
-            Toast.makeText(this, "Point " + choosedMark.getName(), Toast.LENGTH_SHORT).show();
             fbAddObject.setImageResource(R.drawable.ic_delete);
             mChoosedMark = choosedMark;
         } else {
@@ -434,5 +438,14 @@ public class MapActivity extends FragmentActivity
             mChoosedMark = null;
         }
         return false;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (mChoosedMark != null){
+            fbAddObject.setImageResource(R.drawable.ic_add_location);
+            mChoosedMark = null;
+            Toast.makeText(this, "reset mark ", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.lang.reflect.Array;
+
 
 /**
  * Created by gek on 17.04.17.
@@ -68,5 +72,23 @@ public class Utils {
         }
         Log.i("Radius Value",  " distance = " + result);
         return result;
+    }
+
+
+
+    /** define direction from point A to point B in human readable style */
+    public static String getDirection(LatLng end, LatLng start){
+        double radians = Math.atan2(
+                (end.longitude - start.longitude),
+                (end.latitude - start.latitude));
+        double compassReading = radians * (180 / Math.PI);
+
+        String[] directions = new String[] {"North", "NorthEast", "East", "SouthEast", "South",
+                "SouthWest", "West", "NorthWest", "North"};
+        int index = (int) Math.round(compassReading / 45);
+        if (index < 0) {
+            index = index + 8;
+        }
+        return directions[index];
     }
 }
