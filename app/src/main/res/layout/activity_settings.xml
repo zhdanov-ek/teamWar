@@ -9,51 +9,56 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/tvStateRate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/rate_location"/>
-
-
-    </LinearLayout>
-
-    <SeekBar
-        android:id="@+id/sbRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="8"
-        android:progress="4"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/ll_padding">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:orientation="vertical">
             <TextView
-                android:gravity="left"
+                android:id="@+id/tvStateRate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rate_smaller"/>
+                android:text="@string/rate_location"/>
+
+
         </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sbRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="8"
+            android:progress="4"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <TextView
-                android:gravity="right"
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rate_bigger"/>
-        </LinearLayout>
+                android:layout_weight="1">
+                <TextView
+                    android:gravity="left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rate_smaller"/>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rate_bigger"/>
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

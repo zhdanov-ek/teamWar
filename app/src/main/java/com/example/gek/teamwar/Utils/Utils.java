@@ -18,8 +18,6 @@ import java.lang.reflect.Array;
 
 public class Utils {
 
-
-
     // Open system settings of program
     public static void openPermissionSettings(Context ctx) {
         final Intent intent = new Intent();

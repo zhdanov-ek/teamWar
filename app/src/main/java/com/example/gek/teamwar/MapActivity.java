@@ -93,9 +93,6 @@ public class MapActivity extends FragmentActivity
         fbAddObject = (FloatingActionButton) findViewById(R.id.fbAddObject);
         fbAddObject.setOnClickListener(v -> workWithMark());
 
-        // get location courier from DB
-       // Const.db.child(Const.CHILD_COURIER).addValueEventListener(mPositionWariorsListener);
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -445,7 +442,7 @@ public class MapActivity extends FragmentActivity
         if (mChoosedMark != null){
             fbAddObject.setImageResource(R.drawable.ic_add_location);
             mChoosedMark = null;
-            Toast.makeText(this, "reset mark ", Toast.LENGTH_SHORT).show();
+       //     Toast.makeText(this, "reset mark ", Toast.LENGTH_SHORT).show();
         }
     }
 }
