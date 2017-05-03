@@ -18,5 +18,29 @@
         <item name="android:background">@color/colorAccent</item>
     </style>
 
+    <style name="FlatButtonNegative" parent="@android:style/Widget.Button.Small">
+        <item name="android:layout_width">@dimen/button_raised_width</item>
+        <item name="android:layout_height">@dimen/button_raised_height</item>
+        <item name="android:textSize">@dimen/button_raised_font_size</item>
+        <item name="android:background">@drawable/bg_raised_button_negative</item>
+        <item name="android:textColor">@color/colorButtonRaisedBackground</item>
+    </style>
+
+    <style name="FlatButtonPositive" parent="@android:style/Widget.Button.Small">
+        <item name="android:layout_width">@dimen/button_raised_width</item>
+        <item name="android:layout_height">@dimen/button_raised_height</item>
+        <item name="android:textSize">@dimen/button_raised_font_size</item>
+        <item name="android:background">@drawable/bg_raised_button_positive</item>
+        <item name="android:textColor">@color/colorButtonRaisedText</item>
+    </style>
+
+    <style name="SignInButtonGoogle" parent="@android:style/Widget.Button.Small">
+        <item name="android:layout_width">@dimen/button_raised_width</item>
+        <item name="android:layout_height">@dimen/button_raised_height</item>
+        <item name="android:textSize">@dimen/button_raised_font_size</item>
+        <item name="android:background">@drawable/bg_sign_button_google</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
 
 </resources>

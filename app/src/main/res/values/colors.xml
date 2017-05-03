@@ -8,5 +8,14 @@
     <color name="colorLime">#cddc39</color>
     <color name="colorRed">#f44336</color>
 
+    <color name="colorButtonRaisedText">#FFFFFF</color>
 
+    <color name="colorButtonRaisedBackground">#7CB342</color>
+    <color name="colorButtonRaisedBackgroundPress">#558B2F</color>
+    <color name="colorButtonRaisedBackgroundFocus">#AED581</color>
+    <color name="colorButtonRaisedBackgroundPressNegative">#bfd1a9</color>
+
+    <color name="colorButtonGoogleRaised">#F5F5F5</color>
+    <color name="colorButtonGooglePress">#EEEEEE</color>
+    <color name="colorButtonGoogleFocus">#FAFAFA</color>
 </resources>

@@ -43,7 +43,7 @@ public class AuthActivity extends AppCompatActivity
     private Toolbar myToolbar;
     private ScrollView scrollView;
     private ProgressBar progressBar;
-    private Button btnGoogleSignIn, btnSignOut, btnStopService;
+    private Button btnGoogleSignIn, btnStopService;
     private Button  btnConnectGroup;
     private EditText etName;
     private EditText etPasswordGroup;
@@ -73,25 +73,7 @@ public class AuthActivity extends AppCompatActivity
         etPasswordGroup.setText(mSharedPreferences.getString(Const.SETTINGS_PASS, ""));
     }
 
-    private void findAllView() {
-        myToolbar = (Toolbar) findViewById(R.id.toolBar);
-        setSupportActionBar(myToolbar);
 
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnGoogleSignIn = (Button) findViewById(R.id.btnGoogleSignIn);
-        btnSignOut = (Button) findViewById(R.id.btnSignOut);
-        btnConnectGroup = (Button) findViewById(R.id.btnConnectGroup);
-        btnStopService = (Button) findViewById(R.id.btnStopService);
-
-        etName = (EditText) findViewById(R.id.etName);
-        etPasswordGroup = (EditText) findViewById(R.id.etPasswordGroup);
-
-        btnGoogleSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
-        btnConnectGroup.setOnClickListener(this);
-        btnStopService.setOnClickListener(this);
-    }
 
 
     @Override
@@ -107,9 +89,6 @@ public class AuthActivity extends AppCompatActivity
                 isProgressBarShow = true;
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
-                break;
-            case R.id.btnSignOut:
-                makeSignOut();
                 break;
             case R.id.btnConnectGroup:
                 connectToGroup();
@@ -173,9 +152,13 @@ public class AuthActivity extends AppCompatActivity
             if (Connection.getInstance().getServiceRunning()){
                 btnStopService.setVisibility(View.VISIBLE);
                 btnConnectGroup.setText(getString(R.string.action_to_map));
+                etName.setEnabled(false);
+                etPasswordGroup.setEnabled(false);
             } else {
                 btnStopService.setVisibility(View.GONE);
                 btnConnectGroup.setText(getString(R.string.action_connect));
+                etName.setEnabled(true);
+                etPasswordGroup.setEnabled(true);
             }
         } else {
             btnGoogleSignIn.setVisibility(View.VISIBLE);
@@ -188,27 +171,14 @@ public class AuthActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(EXTRA_IS_PROGRESSBAR, isProgressBarShow);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if ((savedInstanceState != null) && (savedInstanceState.containsKey(EXTRA_IS_PROGRESSBAR))){
-            isProgressBarShow = savedInstanceState.getBoolean(EXTRA_IS_PROGRESSBAR);
-        }
-    }
 
     private void makeSignOut() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
+            if (Connection.getInstance().getServiceRunning()){
+                stopLocationService();
+            }
             Connection.getInstance().close();
-
-            // TODO: 15.04.17 Stop service with location listener
-
             updateUi();
         }
     }
@@ -247,9 +217,44 @@ public class AuthActivity extends AppCompatActivity
             case R.id.ab_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 break;
+            case R.id.ab_signout:
+                makeSignOut();
+                break;
             case R.id.ab_about:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void findAllView() {
+        myToolbar = (Toolbar) findViewById(R.id.toolBar);
+        setSupportActionBar(myToolbar);
+
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnGoogleSignIn = (Button) findViewById(R.id.btnGoogleSignIn);
+        btnConnectGroup = (Button) findViewById(R.id.btnConnectGroup);
+        btnStopService = (Button) findViewById(R.id.btnStopService);
+
+        etName = (EditText) findViewById(R.id.etName);
+        etPasswordGroup = (EditText) findViewById(R.id.etPasswordGroup);
+
+        btnGoogleSignIn.setOnClickListener(this);
+        btnConnectGroup.setOnClickListener(this);
+        btnStopService.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(EXTRA_IS_PROGRESSBAR, isProgressBarShow);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if ((savedInstanceState != null) && (savedInstanceState.containsKey(EXTRA_IS_PROGRESSBAR))){
+            isProgressBarShow = savedInstanceState.getBoolean(EXTRA_IS_PROGRESSBAR);
+        }
     }
 }

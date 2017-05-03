@@ -6,6 +6,10 @@
         android:title="@string/menu_settings"
         android:checkable="false" />
 
+    <item android:id="@+id/ab_signout"
+        android:title="@string/menu_sign_out"
+        android:checkable="false" />
+
     <item android:id="@+id/ab_about"
         android:title="@string/menu_about"
         android:checkable="false" />

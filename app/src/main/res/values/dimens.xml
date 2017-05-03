@@ -6,11 +6,13 @@
     <dimen name="font_size_middle">20sp</dimen>
     <dimen name="font_size_big">26sp</dimen>
 
-    <dimen name="button_padding">0dp</dimen>
-    <dimen name="button_width">125dp</dimen>
-    <dimen name="button_height">50dp</dimen>
+    <!-- BUTTONS -->
     <dimen name="button_radius">2dp</dimen>
-    <dimen name="button_layout_margin">3dp</dimen>
+    <dimen name="button_stroke_width">1dp</dimen>
+    <dimen name="button_raised_height">36dp</dimen>
+    <dimen name="button_raised_width">120dp</dimen>
+    <dimen name="button_raised_font_size">20sp</dimen>
+
 
     <dimen name="ll_height_for_button">80dp</dimen>
 
