@@ -45,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Show the map with wariors and objects
@@ -200,6 +201,7 @@ public class MapActivity extends FragmentActivity
             }
         }
         mMap.clear();
+        long currentDate = new Date().getTime();
         if (mListWariors != null){
             for (Warior warior: mListWariors) {
                 String distance;
@@ -212,11 +214,25 @@ public class MapActivity extends FragmentActivity
                             .title("I am")
                             .zIndex(1.0f));         // Show over other markers (other have index 0 (default)
                 } else {
-                    distance = " (" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
-                            warior.getLatitude(), warior.getLongitude()) + ")";
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
-                            .title(warior.getName() + distance));
+                    Boolean isNeedDraw = true;
+
+                    // check date if needed
+                    if (Connection.getInstance().getShowOldWariors()){
+                        double deltaTime = currentDate - warior.getDate().getTime();
+                        if (deltaTime > Const.CRITICAL_TIME) {
+                            Log.d(TAG, "old warior " + warior.getName());
+                            isNeedDraw = false;
+                        }
+                    }
+
+                    if (isNeedDraw){
+                        distance = " (" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
+                                warior.getLatitude(), warior.getLongitude()) + ")";
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
+                                .title(warior.getName() + distance));
+                    }
+
                 }
             }
         }

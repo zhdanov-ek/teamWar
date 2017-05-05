@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.SeekBar;
@@ -18,6 +19,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private SeekBar sbRate;
     private TextView tvStateRate;
     private SharedPreferences mSharedPreferences;
+    private SwitchCompat switchOldWariors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +30,13 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
         tvStateRate = (TextView) findViewById(R.id.tvStateRate);
         sbRate = (SeekBar) findViewById(R.id.sbRate);
+        switchOldWariors = (SwitchCompat) findViewById(R.id.switchOldWariors);
+        switchOldWariors.setOnCheckedChangeListener((buttonView, isChecked) -> updateShowOldWariors(isChecked));
 
         sbRate.setOnSeekBarChangeListener(this);
         updateFrequancy(Connection.getInstance().getFrequancyLocationUpdate());
         sbRate.setProgress(Connection.getInstance().getFrequancyLocationUpdate()/Const.BASE_STEP_FREQUENCY - 1);
+        switchOldWariors.setChecked(Connection.getInstance().getShowOldWariors());
     }
 
     @Override
@@ -57,5 +62,9 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private void updateFrequancy(int frequancy){
         tvStateRate.setText(String.format(getResources().
                 getString(R.string.rate_location), Integer.toString(frequancy)));
+    }
+
+    private void updateShowOldWariors(Boolean b){
+        Connection.getInstance().setShowOldWariors(b);
     }
 }

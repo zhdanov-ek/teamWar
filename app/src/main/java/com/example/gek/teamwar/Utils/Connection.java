@@ -24,6 +24,7 @@ public class Connection {
     private SharedPreferences sharedPreferences;
     private Boolean serviceRunning;
     private int frequancyLocationUpdate;
+    private Boolean showOldWariors;
 
     public static synchronized Connection getInstance(){
         if (instance == null) {
@@ -40,6 +41,7 @@ public class Connection {
         userEmail = "";
         userKey = "";
         serviceRunning = false;
+        showOldWariors = sharedPreferences.getBoolean(Const.SETTINGS_OLD_WARIORS, false);
         frequancyLocationUpdate = sharedPreferences.getInt(Const.SETTINGS_FREQUANCY, DEFAULT_FREQUANCY);
         userName = sharedPreferences.getString(Const.SETTINGS_NAME, "");
         groupPassword = sharedPreferences.getString(Const.SETTINGS_PASS, "");
@@ -115,5 +117,13 @@ public class Connection {
     public void setFrequancyLocationUpdate(int frequancyLocationUpdate) {
         this.frequancyLocationUpdate = frequancyLocationUpdate;
         sharedPreferences.edit().putInt(Const.SETTINGS_FREQUANCY, frequancyLocationUpdate).apply();
+    }
+
+    public Boolean getShowOldWariors() {
+        return showOldWariors;
+    }
+    public void setShowOldWariors(Boolean showOldWariors) {
+        this.showOldWariors = showOldWariors;
+        sharedPreferences.edit().putBoolean(Const.SETTINGS_OLD_WARIORS, showOldWariors).apply();
     }
 }

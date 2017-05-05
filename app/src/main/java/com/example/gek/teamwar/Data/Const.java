@@ -10,6 +10,7 @@ public class Const {
     public static final String SETTINGS_PASS = "password";
     public static final String SETTINGS_EMAIL = "email";
     public static final String SETTINGS_FREQUANCY = "rate";
+    public static final String SETTINGS_OLD_WARIORS = "old_wariors";
 
     public static final int REQUEST_CODE_LOCATION = 3;
     public static final float ZOOM_MAP = 10;
@@ -32,4 +33,6 @@ public class Const {
     public static final int TYPE_MARK_NEUTRAL = 1;
     public static final int TYPE_MARK_OWN = 2;
     public static final int TYPE_MARK_ENEMY = 3;
+
+    public static final double CRITICAL_TIME = 30 * 60 * 1000;
 }
