@@ -29,4 +29,6 @@ public class Const {
     public static final int TYPE_MARK_NEUTRAL = 1;
     public static final int TYPE_MARK_OWN = 2;
     public static final int TYPE_MARK_ENEMY = 3;
+
+    public static final double CRITICAL_TIME = 30 * 60 * 1000;
 }
