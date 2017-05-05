@@ -10,6 +10,7 @@ public class Const {
     public static final String SETTINGS_PASS = "password";
     public static final String SETTINGS_EMAIL = "email";
     public static final String SETTINGS_FREQUANCY = "rate";
+    public static final String SETTINGS_OLD_WARIORS = "old_wariors";
 
     public static final int REQUEST_CODE_LOCATION = 3;
     public static final float ZOOM_MAP = 10;

@@ -43,5 +43,6 @@
     <string name="rate_location">Frequency of get my location %1$s seconds</string>
     <string name="rate_smaller">Bad for battery</string>
     <string name="rate_bigger">Good for battery</string>
+    <string name="show_old_wariors">Show old info about wariors</string>
 
 </resources>

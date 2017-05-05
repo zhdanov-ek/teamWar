@@ -21,8 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/rate_location"/>
-
-
         </LinearLayout>
 
         <SeekBar
@@ -59,6 +57,13 @@
                     android:text="@string/rate_bigger"/>
             </LinearLayout>
         </LinearLayout>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switchOldWariors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/show_old_wariors" />
 
     </LinearLayout>
 
