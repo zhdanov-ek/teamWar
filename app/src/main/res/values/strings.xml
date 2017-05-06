@@ -20,7 +20,7 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_disconnect">Disconnect</string>
     <string name="action_settings">Settings</string>
-    <string name="action_add_mark">Add new mark</string>
+    <string name="action_add_mark">Add mark</string>
 
     <string name="hint_name">Your nick name</string>
     <string name="hint_pass">Password of group</string>

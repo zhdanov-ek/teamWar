@@ -34,5 +34,6 @@ public class Const {
     public static final int TYPE_MARK_OWN = 2;
     public static final int TYPE_MARK_ENEMY = 3;
 
-    public static final double CRITICAL_TIME = 30 * 60 * 1000;
+    public static final double CRITICAL_TIME_WARIOR = 30 * 60 * 1000;
+    public static final double MIN_DELAY_UPDATE = 5 * 1000;
 }

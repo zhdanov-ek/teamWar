@@ -33,11 +33,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -219,7 +217,7 @@ public class MapActivity extends FragmentActivity
                     // check date if needed
                     if (Connection.getInstance().getShowOldWariors()){
                         double deltaTime = currentDate - warior.getDate().getTime();
-                        if (deltaTime > Const.CRITICAL_TIME) {
+                        if (deltaTime > Const.CRITICAL_TIME_WARIOR) {
                             Log.d(TAG, "old warior " + warior.getName());
                             isNeedDraw = false;
                         }
