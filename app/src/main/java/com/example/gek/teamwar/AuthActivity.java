@@ -217,6 +217,9 @@ public class AuthActivity extends AppCompatActivity
             case R.id.ab_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 break;
+            case R.id.ab_log:
+                startActivity(new Intent(getBaseContext(), LogActivity.class));
+                break;
             case R.id.ab_signout:
                 makeSignOut();
                 break;

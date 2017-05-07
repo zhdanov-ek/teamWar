@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.lang.reflect.Array;
+import java.util.Date;
 
 
 /**
@@ -94,5 +95,9 @@ public class Utils {
     public static Boolean validateLatLong(double lat, double lng){
         return (((lat >= -90) && (lat <= 90)) &&
                 ((lng >= -180) && (lng <= 180)));
+    }
+
+    public static void writeLog(String mes, Date date){
+
     }
 }

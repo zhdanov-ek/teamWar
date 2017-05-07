@@ -20,6 +20,7 @@ import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.FbHelper;
+import com.example.gek.teamwar.Utils.LogHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -38,6 +39,7 @@ public class LocationService extends Service
     private LocationRequest mLocationRequest;
     private Handler handler = new Handler();
     private static final String TAG = "LOCATION_SERVICE";
+    private LogHelper logHelper;
 
     public LocationService() {
     }
@@ -52,6 +54,7 @@ public class LocationService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: init GoogleApiClient");
+
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -62,6 +65,10 @@ public class LocationService extends Service
         }
         mGoogleApiClient.connect();
         Connection.getInstance().setServiceRunning(true);
+        if (logHelper == null){
+            logHelper = new LogHelper(getBaseContext());
+        }
+
         Log.d(TAG, "onStartCommand: setServiceRunning - true");
         return START_STICKY;
     }
@@ -71,8 +78,9 @@ public class LocationService extends Service
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(5 * 1000);
+        mLocationRequest.setFastestInterval(100);
+        mLocationRequest.setSmallestDisplacement(1f);
 
         handler.post(runnableGetLocation);
         showNotification();
@@ -139,6 +147,7 @@ public class LocationService extends Service
         warior.setDate(new Date());
         FbHelper.updateWariorPosition(warior);
 
+        logHelper.writeLog(latitude + " - " + longitude + " (write to DB)", new Date());
     }
 
     private void showNotification() {

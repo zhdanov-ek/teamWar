@@ -223,7 +223,7 @@ public class MapActivity extends FragmentActivity
                         }
                     }
 
-                    if (isNeedDraw){
+                    if ((isNeedDraw) && (mMyLocation != null)){
                         distance = " (" + Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
                                 warior.getLatitude(), warior.getLongitude()) + ")";
                         mMap.addMarker(new MarkerOptions()
