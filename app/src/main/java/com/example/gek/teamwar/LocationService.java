@@ -78,7 +78,7 @@ public class LocationService extends Service
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5 * 1000);
+        mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(100);
         mLocationRequest.setSmallestDisplacement(1f);
 
@@ -92,9 +92,9 @@ public class LocationService extends Service
         @Override
         public void run() {
             if (Connection.getInstance().getServiceRunning()){
+                logHelper.writeLog("start Runnable", new Date());
                 handler.postDelayed(this, Connection.getInstance().getFrequancyLocationUpdate()*1000);
                 startLocationUpdates();
-                handler.postDelayed(() -> stopLocationUpdates(), (Const.BASE_STEP_FREQUENCY - 1)*1000);
             } else {
                 stopLocationUpdates();
             }
@@ -121,6 +121,7 @@ public class LocationService extends Service
     private void stopLocationUpdates() {
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            logHelper.writeLog("Remove location updates", new Date());
         }
     }
 
@@ -133,6 +134,7 @@ public class LocationService extends Service
             Connection.getInstance().setLastLocation(
                     new LatLng(location.getLatitude(), location.getLongitude()));
             writePositionToDb(location.getLatitude(), location.getLongitude());
+            stopLocationUpdates();
         }
     }
 
