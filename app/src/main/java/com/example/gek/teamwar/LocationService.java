@@ -3,15 +3,18 @@ package com.example.gek.teamwar;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,71 +24,71 @@ import com.example.gek.teamwar.Data.Warior;
 import com.example.gek.teamwar.Utils.Connection;
 import com.example.gek.teamwar.Utils.FbHelper;
 import com.example.gek.teamwar.Utils.LogHelper;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+
 
 import java.util.Date;
 
-public class LocationService extends Service
-        implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+public class LocationService extends Service {
 
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
     private Handler handler = new Handler();
     private static final String TAG = "LOCATION_SERVICE";
     private LogHelper logHelper;
+    private LocationManager mLocationManager;
 
     public LocationService() {
     }
+
+    /** Get coordinates of current WARIOR position */
+    private android.location.LocationListener mLocationListener = new android.location.LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            if (location != null) {
+                Connection.getInstance().setLastLocation(
+                        new LatLng(location.getLatitude(), location.getLongitude()));
+                writePositionToDb(location.getLatitude(), location.getLongitude());
+                logHelper.writeLog(location.getProvider() + " pass location", new Date());
+                stopLocationUpdates();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(LocationService.this, "Provider enabled " + provider, Toast.LENGTH_SHORT).show();
+            logHelper.writeLog(provider + " enabled", new Date());
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Toast.makeText(LocationService.this, "Provider disabled " + provider, Toast.LENGTH_SHORT).show();
+            logHelper.writeLog(provider + " disabled", new Date());
+        }
+    };
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: ");
         super.onCreate();
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Connection.getInstance().setServiceRunning(true);
+        if (logHelper == null){
+            logHelper = new LogHelper(getBaseContext());
+        }
+        Log.d(TAG, "onStartCommand: setServiceRunning - true");
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: init GoogleApiClient");
-
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-        mGoogleApiClient.connect();
-        Connection.getInstance().setServiceRunning(true);
-        if (logHelper == null){
-            logHelper = new LogHelper(getBaseContext());
-        }
-
-        Log.d(TAG, "onStartCommand: setServiceRunning - true");
+        handler.post(runnableGetLocation);
+        showNotification();
         return START_STICKY;
     }
 
-    /** Init configuration for location: priority, interval and callback */
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(100);
-        mLocationRequest.setSmallestDisplacement(1f);
-
-        handler.post(runnableGetLocation);
-        showNotification();
-        Log.d(TAG, "onConnected: connect to GoogleApiClient");
-    }
 
     // start every n-seconds for get location if service running
     private Runnable runnableGetLocation = new Runnable() {
@@ -104,39 +107,22 @@ public class LocationService extends Service
 
     /** set request for retrieve current location */
     private void startLocationUpdates() {
-        if (mGoogleApiClient.isConnected()){
             if (checkLocationPermission()) {
-                LocationServices.FusedLocationApi.requestLocationUpdates(
-                        mGoogleApiClient, mLocationRequest, this);
+                // Register the listener with the Location Manager to receive location updates
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
             } else {
                 Toast.makeText(getBaseContext(), "No permissions for location", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            mGoogleApiClient.connect();
-        }
     }
 
 
     /** stop listen update about our location */
     private void stopLocationUpdates() {
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            logHelper.writeLog("Remove location updates", new Date());
-        }
+        mLocationManager.removeUpdates(mLocationListener);
+        logHelper.writeLog("Remove location updates", new Date());
+
     }
 
-    /** Get coordinates of current WARIOR position */
-    @Override
-    public void onLocationChanged(Location location) {
-        if (location != null){
-            Log.d(TAG, "onConnected: Latitude = " + location.getLatitude() +
-                    " Longitude = " + location.getLongitude());
-            Connection.getInstance().setLastLocation(
-                    new LatLng(location.getLatitude(), location.getLongitude()));
-            writePositionToDb(location.getLatitude(), location.getLongitude());
-            stopLocationUpdates();
-        }
-    }
 
     private void writePositionToDb(Double latitude, Double longitude){
         Log.d(TAG, "writePositionToDb: ");
@@ -148,7 +134,6 @@ public class LocationService extends Service
         warior.setKey(Connection.getInstance().getUserKey());
         warior.setDate(new Date());
         FbHelper.updateWariorPosition(warior);
-
         logHelper.writeLog(latitude + " - " + longitude + " (write to DB)", new Date());
     }
 
@@ -190,21 +175,8 @@ public class LocationService extends Service
 
 
     @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-        Log.d(TAG, "onConnectionSuspended: ");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
-    }
-
-    @Override
     public void onDestroy() {
-        if (mGoogleApiClient.isConnected()){
-            mGoogleApiClient.disconnect();
-        }
+        mLocationManager.removeUpdates(mLocationListener);
         Log.d(TAG, "onDestroy: disconnect from GoogleApiClient");
         super.onDestroy();
     }
