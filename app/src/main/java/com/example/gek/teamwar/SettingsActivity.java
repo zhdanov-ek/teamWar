@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.example.gek.teamwar.Data.Const;
 import com.example.gek.teamwar.Utils.Connection;
+import com.example.gek.teamwar.Utils.LogHelper;
+
+import java.util.Date;
 
 public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
@@ -20,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private TextView tvStateRate;
     private SharedPreferences mSharedPreferences;
     private SwitchCompat switchOldWariors;
+    private LogHelper logHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         setContentView(R.layout.activity_settings);
         setSupportActionBar((Toolbar) findViewById(R.id.toolBar));
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        logHelper = new LogHelper(getBaseContext());
 
         tvStateRate = (TextView) findViewById(R.id.tvStateRate);
         sbRate = (SeekBar) findViewById(R.id.sbRate);
@@ -56,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         Log.d(TAG, "onStopTrackingTouch: ");
         int frequancy = seekBar.getProgress() * Const.BASE_STEP_FREQUENCY + Const.BASE_STEP_FREQUENCY;
         Connection.getInstance().setFrequancyLocationUpdate(frequancy);
+        logHelper.writeLog("Set delay to " + frequancy, new Date());
     }
 
 
