@@ -49,4 +49,7 @@
     <string name="provider_gps">GPS</string>
     <string name="provider_network">Network</string>
 
+    <!-- MAP -->
+    <string name="direction">Direction</string>
+
 </resources>

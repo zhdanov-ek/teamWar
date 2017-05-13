@@ -2,14 +2,19 @@ package com.example.gek.teamwar.Utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.DecimalFormat;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.gek.teamwar.R;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -97,7 +102,45 @@ public class Utils {
                 ((lng >= -180) && (lng <= 180)));
     }
 
-    public static void writeLog(String mes, Date date){
+    /** Show custom Toast with marker info */
+    public static void showToast(String distance, String direction, Date date, final Context ctx) {
+        LayoutInflater inflater = LayoutInflater.from(ctx);
+        View layout = inflater.inflate(R.layout.layout_toast, null);
 
+        TextView tvDirection = (TextView) layout.findViewById(R.id.tvDirection);
+        TextView tvDistance = (TextView) layout.findViewById(R.id.tvDistance);
+        TextView tvDateUpdate = (TextView) layout.findViewById(R.id.tvDateUpdate);
+
+//        String dateUpdate = formatShort.format(new Date(new Date().getTime() - date.getTime()));
+
+        tvDirection.setText(direction);
+        tvDistance.setText(distance);
+        tvDateUpdate.setText(formatDateUpdate(date));
+
+        Toast toast = new Toast(ctx);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    public static String formatDateUpdate(Date date){
+        String result;
+        long oneHour = 60 * 60 * 1000;
+        long oneDay = oneHour * 24;
+//        SimpleDateFormat formatMinute = new SimpleDateFormat("mm:ss");
+//        SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatFull = new SimpleDateFormat("yyyy.MM.dd, HH:mm");
+
+        long delayTime = new Date().getTime() - date.getTime();
+        if (delayTime < oneHour){
+            result = "меньше часа";
+        } else if (delayTime > oneDay){
+            result = formatFull.format(date);
+        } else {
+            result = "от часа до суток";
+            //formatHour.format(new Date(delayTime));
+        }
+        return result;
     }
 }

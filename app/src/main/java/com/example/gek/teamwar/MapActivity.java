@@ -75,6 +75,7 @@ public class MapActivity extends FragmentActivity
     private IconGenerator mIconGenerator;
     private PolylineOptions mPathOptions;
     private Mark mChoosedMark = null;
+    private Warior mChoosedWarior = null;
 
 
     @Override
@@ -228,7 +229,7 @@ public class MapActivity extends FragmentActivity
                                 warior.getLatitude(), warior.getLongitude()) + ")";
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
-                                .title(warior.getName() + distance));
+                                .title(warior.getName() + distance)).setTag(warior);
                     }
 
                 }
@@ -432,15 +433,29 @@ public class MapActivity extends FragmentActivity
             mPathOptions.add(mMyLocation);
             mPathOptions.add(marker.getPosition());
 
-            String direction = Utils.getDirection(marker.getPosition(), mMyLocation);
-            Toast.makeText(this, "Direction  " + direction, Toast.LENGTH_LONG).show();
+            String direction = getString(R.string.direction) + " " +
+                    Utils.getDirection(marker.getPosition(), mMyLocation);
+            String distance = Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
+                    marker.getPosition().latitude, marker.getPosition().longitude);
+//            Toast.makeText(this, "Direction  " + direction, Toast.LENGTH_LONG).show();
+
+            Date date = new Date();
+            if (marker.getTag() != null){
+                Object object = marker.getTag();
+                if (object instanceof Mark){
+                    date = ((Mark)object).getDate();
+                } else if (object instanceof Warior) {
+                    date = ((Warior) object).getDate();
+                }
+            }
+            Utils.showToast(distance, direction, date, getBaseContext());
             updateUi();
         }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (marker.getTag() != null){
+        if ((marker.getTag() != null) && (marker.getTag() instanceof Mark)){
             Mark choosedMark = (Mark) marker.getTag();
             fbAddObject.setImageResource(R.drawable.ic_delete);
             mChoosedMark = choosedMark;
@@ -459,4 +474,6 @@ public class MapActivity extends FragmentActivity
        //     Toast.makeText(this, "reset mark ", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
