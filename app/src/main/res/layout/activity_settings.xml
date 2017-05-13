@@ -7,6 +7,27 @@
     tools:context="com.example.gek.teamwar.SettingsActivity">
     <include layout="@layout/toolbar"/>
 
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="@string/provider_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rbGps"
+            android:text="@string/provider_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rbNetwork"
+            android:text="@string/provider_network"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"/>
+    </RadioGroup>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,5 +87,6 @@
             android:text="@string/show_old_wariors" />
 
     </LinearLayout>
+
 
 </LinearLayout>

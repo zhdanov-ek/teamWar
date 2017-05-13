@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import com.example.gek.teamwar.Utils.LogHelper;
 
 import java.util.Date;
 
-public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     public static final String TAG = "SETTINGS";
     private SeekBar sbRate;
@@ -24,6 +26,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private SharedPreferences mSharedPreferences;
     private SwitchCompat switchOldWariors;
     private LogHelper logHelper;
+    private RadioButton rbNetwork, rbGps;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,16 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         logHelper = new LogHelper(getBaseContext());
+
+        rbGps = (RadioButton) findViewById(R.id.rbGps);
+        rbGps.setOnClickListener(this);
+        rbNetwork = (RadioButton) findViewById(R.id.rbNetwork);
+        rbNetwork.setOnClickListener(this);
+        if (Connection.getInstance().getProvider() == Const.PROVIDER_GPS){
+            rbGps.setChecked(true);
+        } else {
+            rbNetwork.setChecked(true);
+        }
 
         tvStateRate = (TextView) findViewById(R.id.tvStateRate);
         sbRate = (SeekBar) findViewById(R.id.sbRate);
@@ -73,5 +87,17 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private void updateShowOldWariors(Boolean b){
         Connection.getInstance().setShowOldWariors(b);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.rbGps:
+                Connection.getInstance().setProvider(Const.PROVIDER_GPS);
+                break;
+            case R.id.rbNetwork:
+                Connection.getInstance().setProvider(Const.PROVIDER_NETWORK);
+                break;
+        }
     }
 }
