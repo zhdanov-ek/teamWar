@@ -109,7 +109,19 @@ public class LocationService extends Service {
     private void startLocationUpdates() {
             if (checkLocationPermission()) {
                 // Register the listener with the Location Manager to receive location updates
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+                String provider;
+                switch (Connection.getInstance().getProvider()){
+                    case Const.PROVIDER_GPS:
+                        provider = LocationManager.GPS_PROVIDER;
+                        break;
+                    case Const.PROVIDER_NETWORK:
+                        provider = LocationManager.NETWORK_PROVIDER;
+                        break;
+                    default:
+                        provider = LocationManager.NETWORK_PROVIDER;
+                        break;
+                }
+                mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
             } else {
                 Toast.makeText(getBaseContext(), "No permissions for location", Toast.LENGTH_SHORT).show();
             }
