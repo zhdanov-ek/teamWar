@@ -80,6 +80,7 @@ public class MapActivity extends FragmentActivity
     private Polyline mPath;
     private Mark mChoosedMark = null;
     private Date lastUpdateUi;
+    private Boolean isMarksInitialized;
 
 
     @Override
@@ -116,6 +117,7 @@ public class MapActivity extends FragmentActivity
         mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
 
         mCircleLatLng = new ArrayList();
+        isMarksInitialized = false;
     }
 
     // Map is ready. Check permissions and connect GoogleApiClient
@@ -195,8 +197,12 @@ public class MapActivity extends FragmentActivity
      */
     private void updateUi() {
         Log.d(TAG, "updateUi: ");
+
+        // not need updateUi if map drawed with wariors and marks in last 3 second
         if ((lastUpdateUi != null) &&
-                ((new Date().getTime() - lastUpdateUi.getTime()) < Const.UPDATE_UI_MIN_INTERVAL * 1000)){
+                ((new Date().getTime() - lastUpdateUi.getTime()) < Const.UPDATE_UI_MIN_INTERVAL * 1000) &&
+                (isMarksInitialized)){
+            Log.d(TAG, "updateUi: break");
             return;
         }
 
@@ -229,7 +235,7 @@ public class MapActivity extends FragmentActivity
                     Boolean isNeedDraw = true;
 
                     // check date if needed
-                    if (Connection.getInstance().getShowOldWariors()){
+                    if (!Connection.getInstance().getShowOldWariors()){
                         double deltaTime = currentDate - warior.getDate().getTime();
                         if (deltaTime > Const.CRITICAL_TIME_WARIOR) {
                             Log.d(TAG, "old warior " + warior.getName());
@@ -260,7 +266,7 @@ public class MapActivity extends FragmentActivity
 
         }
 
-        if (mListMarks != null){
+        if ((mListMarks != null) && (mListMarks.size() > 0)){
             for (Mark mark: mListMarks){
                 String distance = "";
                 if (mMyLocation != null){
@@ -288,6 +294,7 @@ public class MapActivity extends FragmentActivity
                         .anchor(mIconGenerator.getAnchorU(), mIconGenerator.getAnchorV());
                 mMap.addMarker(markerOptions.title(distance)).setTag(mark);
             }
+            isMarksInitialized = true;
         }
 
         if (mPathOptions != null){
@@ -375,7 +382,6 @@ public class MapActivity extends FragmentActivity
             for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                 mListMarks.add(childSnapshot.getValue(Mark.class));
             }
-
             if ((mMap != null) && (mIsAllReady)) {
                 updateUi();
             }
