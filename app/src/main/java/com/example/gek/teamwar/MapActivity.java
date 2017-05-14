@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -74,8 +75,9 @@ public class MapActivity extends FragmentActivity
     private LatLng mMyLocation;
     private IconGenerator mIconGenerator;
     private PolylineOptions mPathOptions;
+    private Polyline mPath;
     private Mark mChoosedMark = null;
-    private Warior mChoosedWarior = null;
+    private Date lastUpdateUi;
 
 
     @Override
@@ -189,6 +191,10 @@ public class MapActivity extends FragmentActivity
      */
     private void updateUi() {
         Log.d(TAG, "updateUi: ");
+        if ((lastUpdateUi != null) &&
+                ((new Date().getTime() - lastUpdateUi.getTime()) < Const.UPDATE_UI_MIN_INTERVAL * 1000)){
+            return;
+        }
 
         // get my location. Need for get distance to other markers. Execute only after onCreate
         if ((mMyLocation == null) && (mListWariors != null)) {
@@ -206,6 +212,7 @@ public class MapActivity extends FragmentActivity
                 String distance;
                 // i am
                 if (warior.getKey().contentEquals(Connection.getInstance().getUserKey())) {
+                    lastUpdateUi = new Date();
                     mMyLocation = new LatLng(warior.getLatitude(), warior.getLongitude());
                     mMap.addMarker(new MarkerOptions()
                             .position(mMyLocation)
@@ -267,7 +274,7 @@ public class MapActivity extends FragmentActivity
         }
 
         if (mPathOptions != null){
-            mMap.addPolyline(mPathOptions);
+            mPath = mMap.addPolyline(mPathOptions);
         }
 
 
@@ -437,7 +444,6 @@ public class MapActivity extends FragmentActivity
                     Utils.getDirection(marker.getPosition(), mMyLocation);
             String distance = Utils.getDistance(mMyLocation.latitude, mMyLocation.longitude,
                     marker.getPosition().latitude, marker.getPosition().longitude);
-//            Toast.makeText(this, "Direction  " + direction, Toast.LENGTH_LONG).show();
 
             Date date = new Date();
             if (marker.getTag() != null){
@@ -471,7 +477,11 @@ public class MapActivity extends FragmentActivity
         if (mChoosedMark != null){
             fbAddObject.setImageResource(R.drawable.ic_add_location);
             mChoosedMark = null;
-       //     Toast.makeText(this, "reset mark ", Toast.LENGTH_SHORT).show();
+        }
+        if (mPath != null){
+            mPath.remove();
+            mPath = null;
+            mPathOptions = null;
         }
     }
 

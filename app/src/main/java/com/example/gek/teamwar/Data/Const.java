@@ -15,6 +15,7 @@ public class Const {
 
     public static final int REQUEST_CODE_LOCATION = 3;
     public static final float ZOOM_MAP = 10;
+    public static final int UPDATE_UI_MIN_INTERVAL = 3;
 
     public static final int BASE_STEP_FREQUENCY = 20;
 

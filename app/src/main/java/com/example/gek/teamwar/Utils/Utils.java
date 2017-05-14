@@ -128,18 +128,30 @@ public class Utils {
         String result;
         long oneHour = 60 * 60 * 1000;
         long oneDay = oneHour * 24;
-//        SimpleDateFormat formatMinute = new SimpleDateFormat("mm:ss");
-//        SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat formatFull = new SimpleDateFormat("yyyy.MM.dd, HH:mm");
 
         long delayTime = new Date().getTime() - date.getTime();
         if (delayTime < oneHour){
-            result = "меньше часа";
+            result = secondsToHuman((int)delayTime/1000);
         } else if (delayTime > oneDay){
             result = formatFull.format(date);
         } else {
-            result = "от часа до суток";
-            //formatHour.format(new Date(delayTime));
+            result = secondsToHuman((int)delayTime/1000);
+        }
+        return result;
+    }
+
+    private static String secondsToHuman(int seconds){
+        String result;
+        if (seconds < 60) {
+            result = seconds + " seconds";
+        } else if ((60 * 60 > seconds) && (seconds > 59)){
+            int min = seconds / 60;
+            result = min + " min";
+        } else {
+            int hours = seconds / (60 * 60);
+            int min = (seconds - (hours * 60 * 60))/60;
+            result = hours + "h " + min + " min";
         }
         return result;
     }
