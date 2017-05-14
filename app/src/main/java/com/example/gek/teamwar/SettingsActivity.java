@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private TextView tvStateRate;
     private SharedPreferences mSharedPreferences;
     private SwitchCompat switchOldWariors;
+    private SwitchCompat switchShowCircle;
     private LogHelper logHelper;
     private RadioButton rbNetwork, rbGps;
 
@@ -53,10 +54,14 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         switchOldWariors = (SwitchCompat) findViewById(R.id.switchOldWariors);
         switchOldWariors.setOnCheckedChangeListener((buttonView, isChecked) -> updateShowOldWariors(isChecked));
 
+        switchShowCircle = (SwitchCompat) findViewById(R.id.switchShowCircle);
+        switchShowCircle.setOnCheckedChangeListener((buttonView, isChecked) -> updateShowCircle(isChecked));
+
         sbRate.setOnSeekBarChangeListener(this);
         updateFrequancy(Connection.getInstance().getFrequancyLocationUpdate());
         sbRate.setProgress(Connection.getInstance().getFrequancyLocationUpdate()/Const.BASE_STEP_FREQUENCY - 1);
         switchOldWariors.setChecked(Connection.getInstance().getShowOldWariors());
+        switchShowCircle.setChecked(Connection.getInstance().getShowCircle());
     }
 
     @Override
@@ -87,6 +92,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private void updateShowOldWariors(Boolean b){
         Connection.getInstance().setShowOldWariors(b);
+    }
+
+    private void updateShowCircle(Boolean b){
+        Connection.getInstance().setShowCircle(b);
     }
 
     @Override

@@ -25,6 +25,7 @@ public class Connection {
     private Boolean serviceRunning;
     private int frequancyLocationUpdate;
     private Boolean showOldWariors;
+    private Boolean showCircle;
     private int provider;
 
     public static synchronized Connection getInstance(){
@@ -43,6 +44,7 @@ public class Connection {
         userKey = "";
         serviceRunning = false;
         showOldWariors = sharedPreferences.getBoolean(Const.SETTINGS_OLD_WARIORS, false);
+        showCircle = sharedPreferences.getBoolean(Const.SETTINGS_CIRCLES, false);
         frequancyLocationUpdate = sharedPreferences.getInt(Const.SETTINGS_FREQUANCY, DEFAULT_FREQUANCY);
         userName = sharedPreferences.getString(Const.SETTINGS_NAME, "");
         groupPassword = sharedPreferences.getString(Const.SETTINGS_PASS, "");
@@ -135,5 +137,13 @@ public class Connection {
     public void setProvider(int provider) {
         this.provider = provider;
         sharedPreferences.edit().putInt(Const.SETTINGS_PROVIDER, provider).apply();
+    }
+
+    public Boolean getShowCircle() {
+        return showCircle;
+    }
+    public void setShowCircle(Boolean showCircle) {
+        this.showCircle = showCircle;
+        sharedPreferences.edit().putBoolean(Const.SETTINGS_CIRCLES, showCircle).apply();
     }
 }

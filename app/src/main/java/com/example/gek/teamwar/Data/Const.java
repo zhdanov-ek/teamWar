@@ -12,10 +12,12 @@ public class Const {
     public static final String SETTINGS_FREQUANCY = "rate";
     public static final String SETTINGS_OLD_WARIORS = "old_wariors";
     public static final String SETTINGS_PROVIDER = "provider";
+    public static final String SETTINGS_CIRCLES = "circles";
 
     public static final int REQUEST_CODE_LOCATION = 3;
     public static final float ZOOM_MAP = 10;
     public static final int UPDATE_UI_MIN_INTERVAL = 3;
+    public static final int CIRCLE_WARIOR_RADIUS = 30;
 
     public static final int BASE_STEP_FREQUENCY = 20;
 

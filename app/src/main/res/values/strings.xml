@@ -48,6 +48,7 @@
     <string name="provider_title">Provider for define the location</string>
     <string name="provider_gps">GPS</string>
     <string name="provider_network">Network</string>
+    <string name="show_circle_warior">Show circle on warior</string>
 
     <!-- MAP -->
     <string name="direction">Direction</string>

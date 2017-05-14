@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -71,6 +72,7 @@ public class MapActivity extends FragmentActivity
     private CameraUpdate mCameraUpdate;
     private ArrayList<Warior> mListWariors;
     private ArrayList<Mark> mListMarks;
+    private ArrayList<LatLng> mCircleLatLng;
     private Boolean mIsAllReady = false;
     private LatLng mMyLocation;
     private IconGenerator mIconGenerator;
@@ -112,6 +114,8 @@ public class MapActivity extends FragmentActivity
         mIconGenerator = new IconGenerator(this);
       //  mIconGenerator.setContentRotation(-90);
         mIconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
+
+        mCircleLatLng = new ArrayList();
     }
 
     // Map is ready. Check permissions and connect GoogleApiClient
@@ -206,6 +210,7 @@ public class MapActivity extends FragmentActivity
             }
         }
         mMap.clear();
+        mCircleLatLng.clear();
         long currentDate = new Date().getTime();
         if (mListWariors != null){
             for (Warior warior: mListWariors) {
@@ -219,6 +224,7 @@ public class MapActivity extends FragmentActivity
                             .icon(bdIam)
                             .title("I am")
                             .zIndex(1.0f));         // Show over other markers (other have index 0 (default)
+                    mCircleLatLng.add(mMyLocation);
                 } else {
                     Boolean isNeedDraw = true;
 
@@ -237,10 +243,21 @@ public class MapActivity extends FragmentActivity
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(warior.getLatitude(), warior.getLongitude()))
                                 .title(warior.getName() + distance)).setTag(warior);
+                        mCircleLatLng.add(new LatLng(warior.getLatitude(), warior.getLongitude()));
                     }
 
                 }
             }
+            if (Connection.getInstance().getShowCircle()){
+                for (LatLng center: mCircleLatLng) {
+                    mMap.addCircle(new CircleOptions()
+                            .center(center)
+                            .radius(Const.CIRCLE_WARIOR_RADIUS)
+                            .strokeWidth(0)
+                            .fillColor(getResources().getColor(R.color.colorCircleWarior)));
+                }
+            }
+
         }
 
         if (mListMarks != null){

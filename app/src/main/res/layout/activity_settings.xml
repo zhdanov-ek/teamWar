@@ -90,6 +90,18 @@
     <LinearLayout
         style="@style/ItemSettings">
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switchShowCircle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/show_circle_warior" />
+    </LinearLayout>
+
+    <include layout="@layout/horizontal_line"/>
+
+    <LinearLayout
+        style="@style/ItemSettings">
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/switchOldWariors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

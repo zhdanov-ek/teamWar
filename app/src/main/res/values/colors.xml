@@ -10,6 +10,9 @@
 
     <color name="colorButtonRaisedText">#FFFFFF</color>
 
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorCircleWarior">#2b89fa08</color>
+
     <color name="colorButtonRaisedBackground">#7CB342</color>
     <color name="colorButtonRaisedBackgroundPress">#558B2F</color>
     <color name="colorButtonRaisedBackgroundFocus">#AED581</color>
